@@ -157,7 +157,7 @@
     
     id returnValue;
     
-    // Simple function test
+    // Functions can be added
     JSFunction doSomethingFunction = ^(NSArray* parameters) {
         return @(1337);
     };
@@ -172,8 +172,7 @@
     STAssertNil(error, @"An error should not be thrown");
     STAssertEqualObjects(@(1337), returnValue, @"The number 1337 should be returned");
     
-    // Parameter handling test
-    
+    // Functions that handle parameters can be added
     JSFunction addOneThousandFunction = ^(NSArray* parameters) {
         NSNumber *number = parameters[0];
         return @(number.integerValue + 1000);
@@ -189,9 +188,25 @@
     STAssertNil(error, @"An error should not be returned");
     STAssertEqualObjects(@(2337), returnValue, @"The number 2337 should be returned");
     
+    // Functions can be returned from JavaScript, and called from native code
+    code = @"(function(a) {return a+1});";
+    error = nil;
+    returnValue = [_context evaluateScript:code error:nil];
+    
+    JSFunction returnedFunction = returnValue;
+    STAssertNotNil(returnedFunction, @"The returned value should not be nil");
+    
+    NSNumber* returnedNumber = returnedFunction(@[@(1)]);
+    
+    STAssertEqualObjects(returnedNumber, @(2), @"The JS function, when called from native code, should return 2");
+
+    
 }
 
 - (void) testFunctionCollectionRegistration {
+    
+    NSString* code;
+    NSError* error;
     
     // Test adding a collection of functions
     JSFunction doSomethingFunction = ^(NSArray* parameters) {
@@ -208,23 +223,14 @@
     
     [_context addFunctionsWithDictionary:functions withName:@"Test"];
     
-    NSString* code = @"Test.doSomething() + Test.doSomethingElse()";
-    NSError* error = nil;
+    code = @"Test.doSomething() + Test.doSomethingElse()";
+    error = nil;
     
     id returnValue = [_context evaluateScript:code error:&error];
     
     STAssertNil(error, @"An error should not be thrown");
     STAssertEqualObjects(@"1337Hello", returnValue, @"The string 1337Hello should be returned");
-    
-    code = @"(function(a) {return a+1});";
-    returnValue = [_context evaluateScript:code error:nil];
-    
-    JSFunction returnedFunction = returnValue;
-    
-    NSNumber* returnedNumber = returnedFunction(@[@(1)]);
-    
-    STAssertEqualObjects(returnedNumber, @(2), @"The JS function, when called from native code, should return 2");
-    
+        
     
 }
 
