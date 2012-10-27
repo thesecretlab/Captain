@@ -436,8 +436,7 @@ JSObjectRef JSObjectWithFunctionBlock(JSContextRef context, JSFunction function)
         
         // Register a simple 'log' method
         [self addFunction:^id(NSArray *parameters) {
-            if (parameters.count > 0)
-                NSLog(@"%@", [parameters objectAtIndex:0]);
+            NSLog(@"%@", [parameters componentsJoinedByString:@" "]);
             
             return nil;
         } withName:@"log"];
