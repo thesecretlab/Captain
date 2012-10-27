@@ -76,6 +76,7 @@ NSDictionary* NSDictionaryWithJSObject(JSContextRef context, JSObjectRef object)
 
 id CallFunctionObject(JSContextRef context, JSObjectRef object, NSArray* parameters, id thisObject, JSValueRef* exception) {
     
+    // Build a C array containing the parameters, each converted to JSValueRefs.
     JSValueRef arguments[parameters.count];
     for (int argument = 0; argument < parameters.count; argument++) {
         id argumentAsObject = [parameters objectAtIndex:argument];
@@ -88,13 +89,15 @@ id CallFunctionObject(JSContextRef context, JSObjectRef object, NSArray* paramet
         arguments[argument] = argumentAsValue;
     }
     
+    // If we were given an object to use as 'this', use it (after wrapping it in a JSObjectRef);
+    // otherwise, use the context's global object as 'this'.
+    
     JSObjectRef thisObjectReference;
     
     if (thisObject == nil)
         thisObjectReference = JSContextGetGlobalObject(context);
     else
         thisObjectReference = JSObjectMake(context, NativeObjectClass(), (void*)CFBridgingRetain(thisObject));
-    
     
     // Finally, call the function and return its value.
     JSValueRef returnValue = JSObjectCallAsFunction(context, object, thisObjectReference, parameters.count, arguments, exception);
@@ -103,6 +106,7 @@ id CallFunctionObject(JSContextRef context, JSObjectRef object, NSArray* paramet
         return nil;
     }
     
+    // Convert the result back from a JSValueRef into an NSObject.
     return NSObjectWithJSValue(context, returnValue);
     
 }
@@ -187,7 +191,7 @@ JSValueRef JSValueWithNSObject(JSContextRef context, id value, JSValueRef* excep
         return NULL;
     }
     
-    // TODO: complete this
+    // TODO: complete this for further types
     if ([value isKindOfClass:[NSNumber class]])
         return JSValueMakeNumber(context, [value doubleValue]);
     if ([value isKindOfClass:[NSString class]])

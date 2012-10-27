@@ -9,10 +9,13 @@
 #import <Foundation/Foundation.h>
 
 #import "JavaScriptCore.h"
+#import "JSDefines.h"
+#import "JSTypeConversion.h"
+#import "JSObjectBridging.h"
 
 @interface JSContext : NSObject
 
-- (void)loadScriptNamed:(NSString*)fileName error:(NSError**)error;
+- (BOOL)loadScriptNamed:(NSString*)fileName error:(NSError**)error;
 - (id) evaluateScript:(NSString*)script error:(NSError**)error;
 
 - (void) addFunction:(JSFunction)function withName:(NSString*)functionName;

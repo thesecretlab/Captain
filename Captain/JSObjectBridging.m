@@ -57,10 +57,12 @@ bool NativeObjectHasProperty(JSContextRef ctx, JSObjectRef object, JSStringRef p
 // property name and a value to set.
 bool NativeObjectSetProperty (JSContextRef ctx, JSObjectRef object, JSStringRef propertyName, JSValueRef value, JSValueRef* exception) {
     
+    // Grab the Objective-C object
     id internalObject = (__bridge id)(JSObjectGetPrivate(object));
     
-    NSString* key = NSStringWithJSString(propertyName);
+    // Check to see if the object has a 'setFoo' method with the property name
     
+    NSString* key = NSStringWithJSString(propertyName);
     SEL setterSelector = PropertySetterSelectorForName(key);
     
     if ([internalObject respondsToSelector:setterSelector]) {
@@ -82,10 +84,12 @@ bool NativeObjectSetProperty (JSContextRef ctx, JSObjectRef object, JSStringRef 
 // if it does, returns a function object that calls the method.
 JSValueRef NativeObjectGetProperty (JSContextRef ctx, JSObjectRef object, JSStringRef propertyName, JSValueRef* exception) {
     
+    // Grab the Objective-C object out from the JSObject
     id internalObject = (__bridge id)(JSObjectGetPrivate(object));
     
     NSString* key = NSStringWithJSString(propertyName);
     
+    // Does this object respond to the getter selector for 'propertyName'?
     SEL getterSelector = NSSelectorFromString(key);
     
     if ([internalObject respondsToSelector:getterSelector]) {
@@ -95,7 +99,10 @@ JSValueRef NativeObjectGetProperty (JSContextRef ctx, JSObjectRef object, JSStri
         return JSValueWithNSObject(ctx, value, exception);
     } else {
         
-        // Could be a method call; if so, return a method call block object that wraps the call
+        // Could be intended as a method call - we'll check by seeing if the
+        // object has a 'handleFoo' method. If so, we'll return a method call
+        // block object that performs this method when called.
+        
         SEL methodCallSelector = MethodCallSelectorForName(key);
         
         if ([internalObject respondsToSelector:methodCallSelector]) {
@@ -107,7 +114,7 @@ JSValueRef NativeObjectGetProperty (JSContextRef ctx, JSObjectRef object, JSStri
             });
         }
         
-        *exception  = JSValueWithNSString(ctx, [NSString stringWithFormat:@"%@ has no setter method '%@'", [internalObject class], key]);
+        *exception  = JSValueWithNSString(ctx, [NSString stringWithFormat:@"%@ has no method '%@'", [internalObject class], key]);
         return JSValueMakeUndefined(ctx);
     }
 }
@@ -115,11 +122,9 @@ JSValueRef NativeObjectGetProperty (JSContextRef ctx, JSObjectRef object, JSStri
 // Cleans up dangling references to the internal Objective-C object
 // stored inside a native object.
 void NativeObjectFinalise (JSObjectRef object) {
-    // The JSObject is going away;
-    // Transfer the block object back into ARC, and then set it to nil;
-    // this releases the block from memory
-    id internalObject = CFBridgingRelease(JSObjectGetPrivate(object));
-    internalObject = nil;
+    // The JSObject is going away; transfer the block object back into
+    // ARC, and then set it to nil. This releases the block from memory
+    CFBridgingRelease(JSObjectGetPrivate(object));
 }
 
 JSClassDefinition NativeObjectClassDefinition = {
@@ -148,8 +153,8 @@ void BlockFunctionFinalise (JSObjectRef object) {
     // The JSObject is going away;
     // Transfer the block object back into ARC, and then set it to nil;
     // this releases the block from memory
-    JSFunction function = CFBridgingRelease(JSObjectGetPrivate(object));
-    function = nil;
+    CFBridgingRelease(JSObjectGetPrivate(object));
+    
 }
 
 // Called when a block function object gets called from JavaScript.

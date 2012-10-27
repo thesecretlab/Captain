@@ -6,9 +6,7 @@
 //  Copyright (c) 2012 Secret Lab. All rights reserved.
 //
 
-#import "JavaScriptCore.h"
-#import "Captain.h"
-
+#import "JSContext.h"
 
 @implementation JSContext {
     JSGlobalContextRef _scriptContext;
@@ -142,7 +140,8 @@
     
     JSStringRelease(functionNameJSString);
     
-    if (exception != nil) {
+    // Could we find it?
+    if (exception != nil && error != nil) {
         NSString* errorString = NSStringWithJSValue(_scriptContext, exception);
         *error = [NSError errorWithDomain:@"JavaScript" code:0 userInfo:@{NSLocalizedDescriptionKey:errorString}];
         return nil;
@@ -151,27 +150,33 @@
     // We have the value that it evaluated to; now we need to
     // if figure out if it's a callable object.
     
+    
+    // Is it an object?
     JSObjectRef object = JSValueToObject(_scriptContext, evaluatedValue, &exception);
     
-    if (exception != nil) {
+    if (exception != nil && error != nil) {
         NSString* errorString = NSStringWithJSValue(_scriptContext, exception);
         *error = [NSError errorWithDomain:@"JavaScript" code:0 userInfo:@{NSLocalizedDescriptionKey:errorString}];
         return nil;
     }
     
-    if (JSObjectIsFunction(_scriptContext, object) == NO) {
+    // Is it a _callable_ object?
+    if (JSObjectIsFunction(_scriptContext, object) == NO && error != nil) {
         *error = [NSError errorWithDomain:@"JavaScript" code:0 userInfo:@{NSLocalizedDescriptionKey:@"Object is not callable"}];
         return nil;
     }
     
+    // Ok, call it!
     id returnValue = CallFunctionObject(_scriptContext, object, parameters, thisObject, &exception);
     
-    if (exception != nil) {
+    // Was there an exception?
+    if (exception != nil && error != nil) {
         NSString* errorString = NSStringWithJSValue(_scriptContext, exception);
         *error = [NSError errorWithDomain:@"JavaScript" code:0 userInfo:@{NSLocalizedDescriptionKey:errorString}];
         return nil;
     }
     
+    // Finally, return the fruits of our labours.
     return returnValue;
 }
 
@@ -180,7 +185,7 @@
 // This method first looks in the Documents directory for
 // the appropriate JavaScript file before falling back to any
 // built-in JavaScript files.
-- (void)loadScriptNamed:(NSString*)fileName error:(NSError**)error  {
+- (BOOL)loadScriptNamed:(NSString*)fileName error:(NSError**)error  {
     
     NSURL* scriptURL = nil;
     
@@ -203,14 +208,14 @@
     
     // Still couldn't find it? Give up.
     if (scriptURL == nil) {
-        return;
+        return NO;
     }
     
     // Load the script and evaluate it.
     NSString* scriptText = [NSString stringWithContentsOfURL:scriptURL encoding:NSUTF8StringEncoding error:error];
     
     if (scriptText == nil)
-        return;
+        return NO;
     
     JSStringRef scriptNameJSString = JSStringCreateWithNSString(fileName);
     
@@ -222,6 +227,8 @@
     JSStringRelease(scriptNameJSString);
     
     [self evaluateScript:scriptText error:error thisObject:object];
+    
+    return YES;
 }
 
 // Tidy up the script execution context.
