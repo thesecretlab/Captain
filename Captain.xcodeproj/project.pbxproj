@@ -7,28 +7,28 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		681DCB7B162405DF00B576AA /* JavascriptCore-dlsym.m in Sources */ = {isa = PBXBuildFile; fileRef = 681DCB73162405DF00B576AA /* JavascriptCore-dlsym.m */; };
-		681DCB7E16240CF200B576AA /* JSContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 681DCB7D16240CF200B576AA /* JSContext.m */; };
 		681DCB851624305F00B576AA /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68B0E24C1623FDA3008D3BF8 /* SenTestingKit.framework */; };
 		681DCB861624305F00B576AA /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68B0E2281623FDA2008D3BF8 /* UIKit.framework */; };
 		681DCB871624305F00B576AA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68B0E22A1623FDA2008D3BF8 /* Foundation.framework */; };
 		681DCB8D1624305F00B576AA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 681DCB8B1624305F00B576AA /* InfoPlist.strings */; };
-		681DCB901624305F00B576AA /* JSDelegationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 681DCB8F1624305F00B576AA /* JSDelegationTests.m */; };
+		681DCB901624305F00B576AA /* CaptainTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 681DCB8F1624305F00B576AA /* CaptainTests.m */; };
 		681DCB95162430D100B576AA /* JSContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 681DCB7D16240CF200B576AA /* JSContext.m */; };
 		681DCB961624312B00B576AA /* JavascriptCore-dlsym.m in Sources */ = {isa = PBXBuildFile; fileRef = 681DCB73162405DF00B576AA /* JavascriptCore-dlsym.m */; };
 		681DCB9B16244C3100B576AA /* TestExtensionScript.js in Resources */ = {isa = PBXBuildFile; fileRef = 681DCB9A16244C3100B576AA /* TestExtensionScript.js */; };
-		68B0E2291623FDA2008D3BF8 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68B0E2281623FDA2008D3BF8 /* UIKit.framework */; };
-		68B0E22B1623FDA2008D3BF8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68B0E22A1623FDA2008D3BF8 /* Foundation.framework */; };
-		68B0E22D1623FDA2008D3BF8 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68B0E22C1623FDA2008D3BF8 /* CoreGraphics.framework */; };
-		68B0E2721623FDDE008D3BF8 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 68B0E2651623FDDE008D3BF8 /* AppDelegate.m */; };
-		68B0E2731623FDDE008D3BF8 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 68B0E2661623FDDE008D3BF8 /* Default-568h@2x.png */; };
-		68B0E2741623FDDE008D3BF8 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 68B0E2671623FDDE008D3BF8 /* Default.png */; };
-		68B0E2751623FDDE008D3BF8 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 68B0E2681623FDDE008D3BF8 /* Default@2x.png */; };
-		68B0E2761623FDDE008D3BF8 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 68B0E2691623FDDE008D3BF8 /* InfoPlist.strings */; };
-		68B0E2771623FDDE008D3BF8 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 68B0E26B1623FDDE008D3BF8 /* MainStoryboard.storyboard */; };
-		68B0E2791623FDDE008D3BF8 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 68B0E26F1623FDDE008D3BF8 /* main.m */; };
-		68B0E27A1623FDDE008D3BF8 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 68B0E2711623FDDE008D3BF8 /* ViewController.m */; };
+		683187FE163BC6F000281346 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68B0E22A1623FDA2008D3BF8 /* Foundation.framework */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		683187FB163BC6F000281346 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/${PRODUCT_NAME}";
+			dstSubfolderSpec = 16;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		681DCB72162405DF00B576AA /* JavascriptCore-dlsym.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "JavascriptCore-dlsym.h"; sourceTree = "<group>"; };
@@ -42,30 +42,19 @@
 		681DCB7A162405DF00B576AA /* JSValueRef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSValueRef.h; sourceTree = "<group>"; };
 		681DCB7C16240CF200B576AA /* JSContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSContext.h; sourceTree = "<group>"; };
 		681DCB7D16240CF200B576AA /* JSContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSContext.m; sourceTree = "<group>"; };
-		681DCB841624305F00B576AA /* JSDelegationTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = JSDelegationTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
-		681DCB8A1624305F00B576AA /* JSDelegationTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "JSDelegationTests-Info.plist"; sourceTree = "<group>"; };
+		681DCB841624305F00B576AA /* CaptainTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CaptainTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
+		681DCB8A1624305F00B576AA /* CaptainTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "CaptainTests-Info.plist"; sourceTree = "<group>"; };
 		681DCB8C1624305F00B576AA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		681DCB8E1624305F00B576AA /* JSDelegationTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JSDelegationTests.h; sourceTree = "<group>"; };
-		681DCB8F1624305F00B576AA /* JSDelegationTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JSDelegationTests.m; sourceTree = "<group>"; };
-		681DCB911624305F00B576AA /* JSDelegationTests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "JSDelegationTests-Prefix.pch"; sourceTree = "<group>"; };
+		681DCB8E1624305F00B576AA /* CaptainTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CaptainTests.h; sourceTree = "<group>"; };
+		681DCB8F1624305F00B576AA /* CaptainTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CaptainTests.m; sourceTree = "<group>"; };
+		681DCB911624305F00B576AA /* CaptainTests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CaptainTests-Prefix.pch"; sourceTree = "<group>"; };
 		681DCB9A16244C3100B576AA /* TestExtensionScript.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = TestExtensionScript.js; sourceTree = "<group>"; };
-		68B0E2241623FDA2008D3BF8 /* JavascriptDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JavascriptDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		683187FD163BC6F000281346 /* libCaptain.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libCaptain.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		68318801163BC6F000281346 /* libCaptain-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "libCaptain-Prefix.pch"; sourceTree = "<group>"; };
 		68B0E2281623FDA2008D3BF8 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		68B0E22A1623FDA2008D3BF8 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		68B0E22C1623FDA2008D3BF8 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		68B0E24C1623FDA3008D3BF8 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
-		68B0E2641623FDDE008D3BF8 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		68B0E2651623FDDE008D3BF8 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		68B0E2661623FDDE008D3BF8 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
-		68B0E2671623FDDE008D3BF8 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
-		68B0E2681623FDDE008D3BF8 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
-		68B0E26A1623FDDE008D3BF8 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		68B0E26C1623FDDE008D3BF8 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
-		68B0E26D1623FDDE008D3BF8 /* JavascriptDemo-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "JavascriptDemo-Info.plist"; sourceTree = "<group>"; };
-		68B0E26E1623FDDE008D3BF8 /* JavascriptDemo-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "JavascriptDemo-Prefix.pch"; sourceTree = "<group>"; };
-		68B0E26F1623FDDE008D3BF8 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		68B0E2701623FDDE008D3BF8 /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		68B0E2711623FDDE008D3BF8 /* ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,13 +68,11 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		68B0E2211623FDA2008D3BF8 /* Frameworks */ = {
+		683187FA163BC6F000281346 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				68B0E2291623FDA2008D3BF8 /* UIKit.framework in Frameworks */,
-				68B0E22B1623FDA2008D3BF8 /* Foundation.framework in Frameworks */,
-				68B0E22D1623FDA2008D3BF8 /* CoreGraphics.framework in Frameworks */,
+				683187FE163BC6F000281346 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -108,23 +95,42 @@
 			path = JavaScriptCore;
 			sourceTree = "<group>";
 		};
-		681DCB881624305F00B576AA /* JSDelegationTests */ = {
+		681DCB881624305F00B576AA /* CaptainTests */ = {
 			isa = PBXGroup;
 			children = (
-				681DCB8E1624305F00B576AA /* JSDelegationTests.h */,
-				681DCB8F1624305F00B576AA /* JSDelegationTests.m */,
+				681DCB8E1624305F00B576AA /* CaptainTests.h */,
+				681DCB8F1624305F00B576AA /* CaptainTests.m */,
 				681DCB891624305F00B576AA /* Supporting Files */,
 				681DCB9A16244C3100B576AA /* TestExtensionScript.js */,
 			);
-			path = JSDelegationTests;
+			path = CaptainTests;
 			sourceTree = "<group>";
 		};
 		681DCB891624305F00B576AA /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				681DCB8A1624305F00B576AA /* JSDelegationTests-Info.plist */,
+				681DCB8A1624305F00B576AA /* CaptainTests-Info.plist */,
 				681DCB8B1624305F00B576AA /* InfoPlist.strings */,
-				681DCB911624305F00B576AA /* JSDelegationTests-Prefix.pch */,
+				681DCB911624305F00B576AA /* CaptainTests-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		683187FF163BC6F000281346 /* libCaptain */ = {
+			isa = PBXGroup;
+			children = (
+				681DCB7C16240CF200B576AA /* JSContext.h */,
+				681DCB7D16240CF200B576AA /* JSContext.m */,
+				68318800163BC6F000281346 /* Supporting Files */,
+			);
+			name = libCaptain;
+			path = Captain;
+			sourceTree = "<group>";
+		};
+		68318800163BC6F000281346 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				68318801163BC6F000281346 /* libCaptain-Prefix.pch */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -133,8 +139,8 @@
 			isa = PBXGroup;
 			children = (
 				681DCB70162405CF00B576AA /* JavaScriptCore */,
-				68B0E2631623FDDE008D3BF8 /* JavascriptDemo */,
-				681DCB881624305F00B576AA /* JSDelegationTests */,
+				681DCB881624305F00B576AA /* CaptainTests */,
+				683187FF163BC6F000281346 /* libCaptain */,
 				68B0E2271623FDA2008D3BF8 /* Frameworks */,
 				68B0E2251623FDA2008D3BF8 /* Products */,
 			);
@@ -143,8 +149,8 @@
 		68B0E2251623FDA2008D3BF8 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				68B0E2241623FDA2008D3BF8 /* JavascriptDemo.app */,
-				681DCB841624305F00B576AA /* JSDelegationTests.octest */,
+				681DCB841624305F00B576AA /* CaptainTests.octest */,
+				683187FD163BC6F000281346 /* libCaptain.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -160,33 +166,12 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		68B0E2631623FDDE008D3BF8 /* JavascriptDemo */ = {
-			isa = PBXGroup;
-			children = (
-				68B0E2641623FDDE008D3BF8 /* AppDelegate.h */,
-				68B0E2651623FDDE008D3BF8 /* AppDelegate.m */,
-				68B0E2661623FDDE008D3BF8 /* Default-568h@2x.png */,
-				68B0E2671623FDDE008D3BF8 /* Default.png */,
-				68B0E2681623FDDE008D3BF8 /* Default@2x.png */,
-				68B0E2691623FDDE008D3BF8 /* InfoPlist.strings */,
-				68B0E26B1623FDDE008D3BF8 /* MainStoryboard.storyboard */,
-				68B0E26D1623FDDE008D3BF8 /* JavascriptDemo-Info.plist */,
-				68B0E26E1623FDDE008D3BF8 /* JavascriptDemo-Prefix.pch */,
-				68B0E26F1623FDDE008D3BF8 /* main.m */,
-				68B0E2701623FDDE008D3BF8 /* ViewController.h */,
-				68B0E2711623FDDE008D3BF8 /* ViewController.m */,
-				681DCB7C16240CF200B576AA /* JSContext.h */,
-				681DCB7D16240CF200B576AA /* JSContext.m */,
-			);
-			path = JavascriptDemo;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		681DCB831624305F00B576AA /* JSDelegationTests */ = {
+		681DCB831624305F00B576AA /* CaptainTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 681DCB921624305F00B576AA /* Build configuration list for PBXNativeTarget "JSDelegationTests" */;
+			buildConfigurationList = 681DCB921624305F00B576AA /* Build configuration list for PBXNativeTarget "CaptainTests" */;
 			buildPhases = (
 				681DCB7F1624305F00B576AA /* Sources */,
 				681DCB801624305F00B576AA /* Frameworks */,
@@ -197,27 +182,27 @@
 			);
 			dependencies = (
 			);
-			name = JSDelegationTests;
+			name = CaptainTests;
 			productName = JSDelegationTests;
-			productReference = 681DCB841624305F00B576AA /* JSDelegationTests.octest */;
+			productReference = 681DCB841624305F00B576AA /* CaptainTests.octest */;
 			productType = "com.apple.product-type.bundle";
 		};
-		68B0E2231623FDA2008D3BF8 /* JavascriptDemo */ = {
+		683187FC163BC6F000281346 /* Captain */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 68B0E25D1623FDA3008D3BF8 /* Build configuration list for PBXNativeTarget "JavascriptDemo" */;
+			buildConfigurationList = 68318806163BC6F000281346 /* Build configuration list for PBXNativeTarget "Captain" */;
 			buildPhases = (
-				68B0E2201623FDA2008D3BF8 /* Sources */,
-				68B0E2211623FDA2008D3BF8 /* Frameworks */,
-				68B0E2221623FDA2008D3BF8 /* Resources */,
+				683187F9163BC6F000281346 /* Sources */,
+				683187FA163BC6F000281346 /* Frameworks */,
+				683187FB163BC6F000281346 /* CopyFiles */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = JavascriptDemo;
-			productName = JavscriptDemo;
-			productReference = 68B0E2241623FDA2008D3BF8 /* JavascriptDemo.app */;
-			productType = "com.apple.product-type.application";
+			name = Captain;
+			productName = libCaptain;
+			productReference = 683187FD163BC6F000281346 /* libCaptain.a */;
+			productType = "com.apple.product-type.library.static";
 		};
 /* End PBXNativeTarget section */
 
@@ -228,7 +213,7 @@
 				LastUpgradeCheck = 0450;
 				ORGANIZATIONNAME = "Secret Lab";
 			};
-			buildConfigurationList = 68B0E21E1623FDA2008D3BF8 /* Build configuration list for PBXProject "JavascriptDemo" */;
+			buildConfigurationList = 68B0E21E1623FDA2008D3BF8 /* Build configuration list for PBXProject "Captain" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -240,8 +225,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				68B0E2231623FDA2008D3BF8 /* JavascriptDemo */,
-				681DCB831624305F00B576AA /* JSDelegationTests */,
+				681DCB831624305F00B576AA /* CaptainTests */,
+				683187FC163BC6F000281346 /* Captain */,
 			);
 		};
 /* End PBXProject section */
@@ -253,18 +238,6 @@
 			files = (
 				681DCB8D1624305F00B576AA /* InfoPlist.strings in Resources */,
 				681DCB9B16244C3100B576AA /* TestExtensionScript.js in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		68B0E2221623FDA2008D3BF8 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				68B0E2731623FDDE008D3BF8 /* Default-568h@2x.png in Resources */,
-				68B0E2741623FDDE008D3BF8 /* Default.png in Resources */,
-				68B0E2751623FDDE008D3BF8 /* Default@2x.png in Resources */,
-				68B0E2761623FDDE008D3BF8 /* InfoPlist.strings in Resources */,
-				68B0E2771623FDDE008D3BF8 /* MainStoryboard.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -291,21 +264,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				681DCB901624305F00B576AA /* JSDelegationTests.m in Sources */,
+				681DCB901624305F00B576AA /* CaptainTests.m in Sources */,
 				681DCB95162430D100B576AA /* JSContext.m in Sources */,
 				681DCB961624312B00B576AA /* JavascriptCore-dlsym.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		68B0E2201623FDA2008D3BF8 /* Sources */ = {
+		683187F9163BC6F000281346 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				68B0E2721623FDDE008D3BF8 /* AppDelegate.m in Sources */,
-				68B0E2791623FDDE008D3BF8 /* main.m in Sources */,
-				68B0E27A1623FDDE008D3BF8 /* ViewController.m in Sources */,
-				681DCB7B162405DF00B576AA /* JavascriptCore-dlsym.m in Sources */,
-				681DCB7E16240CF200B576AA /* JSContext.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -320,22 +288,6 @@
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
-		68B0E2691623FDDE008D3BF8 /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				68B0E26A1623FDDE008D3BF8 /* en */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-		68B0E26B1623FDDE008D3BF8 /* MainStoryboard.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				68B0E26C1623FDDE008D3BF8 /* en */,
-			);
-			name = MainStoryboard.storyboard;
-			sourceTree = "<group>";
-		};
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
@@ -347,8 +299,8 @@
 					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "JSDelegationTests/JSDelegationTests-Prefix.pch";
-				INFOPLIST_FILE = "JSDelegationTests/JSDelegationTests-Info.plist";
+				GCC_PREFIX_HEADER = "CaptainTests/CaptainTests-Prefix.pch";
+				INFOPLIST_FILE = "CaptainTests/CaptainTests-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = octest;
 			};
@@ -362,10 +314,34 @@
 					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "JSDelegationTests/JSDelegationTests-Prefix.pch";
-				INFOPLIST_FILE = "JSDelegationTests/JSDelegationTests-Info.plist";
+				GCC_PREFIX_HEADER = "CaptainTests/CaptainTests-Prefix.pch";
+				INFOPLIST_FILE = "CaptainTests/CaptainTests-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = octest;
+			};
+			name = Release;
+		};
+		68318807163BC6F000281346 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DSTROOT = /tmp/libCaptain.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "libCaptain/libCaptain-Prefix.pch";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		68318808163BC6F000281346 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DSTROOT = /tmp/libCaptain.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "libCaptain/libCaptain-Prefix.pch";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
 			};
 			name = Release;
 		};
@@ -419,34 +395,10 @@
 			};
 			name = Release;
 		};
-		68B0E25E1623FDA3008D3BF8 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "JavascriptDemo/JavascriptDemo-Prefix.pch";
-				HEADER_SEARCH_PATHS = .;
-				INFOPLIST_FILE = "$(SRCROOT)/JavascriptDemo/JavascriptDemo-Info.plist";
-				PRODUCT_NAME = JavascriptDemo;
-				WRAPPER_EXTENSION = app;
-			};
-			name = Debug;
-		};
-		68B0E25F1623FDA3008D3BF8 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "JavascriptDemo/JavascriptDemo-Prefix.pch";
-				HEADER_SEARCH_PATHS = .;
-				INFOPLIST_FILE = "$(SRCROOT)/JavascriptDemo/JavascriptDemo-Info.plist";
-				PRODUCT_NAME = JavascriptDemo;
-				WRAPPER_EXTENSION = app;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		681DCB921624305F00B576AA /* Build configuration list for PBXNativeTarget "JSDelegationTests" */ = {
+		681DCB921624305F00B576AA /* Build configuration list for PBXNativeTarget "CaptainTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				681DCB931624305F00B576AA /* Debug */,
@@ -455,20 +407,20 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		68B0E21E1623FDA2008D3BF8 /* Build configuration list for PBXProject "JavascriptDemo" */ = {
+		68318806163BC6F000281346 /* Build configuration list for PBXNativeTarget "Captain" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				68B0E25B1623FDA3008D3BF8 /* Debug */,
-				68B0E25C1623FDA3008D3BF8 /* Release */,
+				68318807163BC6F000281346 /* Debug */,
+				68318808163BC6F000281346 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		68B0E25D1623FDA3008D3BF8 /* Build configuration list for PBXNativeTarget "JavascriptDemo" */ = {
+		68B0E21E1623FDA2008D3BF8 /* Build configuration list for PBXProject "Captain" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				68B0E25E1623FDA3008D3BF8 /* Debug */,
-				68B0E25F1623FDA3008D3BF8 /* Release */,
+				68B0E25B1623FDA3008D3BF8 /* Debug */,
+				68B0E25C1623FDA3008D3BF8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
