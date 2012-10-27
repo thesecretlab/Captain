@@ -31,15 +31,15 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		681DCB72162405DF00B576AA /* JavascriptCore-dlsym.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "JavascriptCore-dlsym.h"; path = "jscocoa/iPhone/JavascriptCore-dlsym.h"; sourceTree = "<group>"; };
-		681DCB73162405DF00B576AA /* JavascriptCore-dlsym.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "JavascriptCore-dlsym.m"; path = "jscocoa/iPhone/JavascriptCore-dlsym.m"; sourceTree = "<group>"; };
-		681DCB74162405DF00B576AA /* JavaScriptCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JavaScriptCore.h; path = jscocoa/iPhone/JavaScriptCore.h; sourceTree = "<group>"; };
-		681DCB75162405DF00B576AA /* JSBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JSBase.h; path = jscocoa/iPhone/JSBase.h; sourceTree = "<group>"; };
-		681DCB76162405DF00B576AA /* JSContextRef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JSContextRef.h; path = jscocoa/iPhone/JSContextRef.h; sourceTree = "<group>"; };
-		681DCB77162405DF00B576AA /* JSObjectRef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JSObjectRef.h; path = jscocoa/iPhone/JSObjectRef.h; sourceTree = "<group>"; };
-		681DCB78162405DF00B576AA /* JSStringRef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JSStringRef.h; path = jscocoa/iPhone/JSStringRef.h; sourceTree = "<group>"; };
-		681DCB79162405DF00B576AA /* JSStringRefCF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JSStringRefCF.h; path = jscocoa/iPhone/JSStringRefCF.h; sourceTree = "<group>"; };
-		681DCB7A162405DF00B576AA /* JSValueRef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JSValueRef.h; path = jscocoa/iPhone/JSValueRef.h; sourceTree = "<group>"; };
+		681DCB72162405DF00B576AA /* JavascriptCore-dlsym.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "JavascriptCore-dlsym.h"; sourceTree = "<group>"; };
+		681DCB73162405DF00B576AA /* JavascriptCore-dlsym.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "JavascriptCore-dlsym.m"; sourceTree = "<group>"; };
+		681DCB74162405DF00B576AA /* JavaScriptCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JavaScriptCore.h; sourceTree = "<group>"; };
+		681DCB75162405DF00B576AA /* JSBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSBase.h; sourceTree = "<group>"; };
+		681DCB76162405DF00B576AA /* JSContextRef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSContextRef.h; sourceTree = "<group>"; };
+		681DCB77162405DF00B576AA /* JSObjectRef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSObjectRef.h; sourceTree = "<group>"; };
+		681DCB78162405DF00B576AA /* JSStringRef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSStringRef.h; sourceTree = "<group>"; };
+		681DCB79162405DF00B576AA /* JSStringRefCF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSStringRefCF.h; sourceTree = "<group>"; };
+		681DCB7A162405DF00B576AA /* JSValueRef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSValueRef.h; sourceTree = "<group>"; };
 		681DCB7C16240CF200B576AA /* JSContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSContext.h; sourceTree = "<group>"; };
 		681DCB7D16240CF200B576AA /* JSContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSContext.m; sourceTree = "<group>"; };
 		681DCB841624305F00B576AA /* JSDelegationTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = JSDelegationTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -105,7 +105,7 @@
 				681DCB79162405DF00B576AA /* JSStringRefCF.h */,
 				681DCB7A162405DF00B576AA /* JSValueRef.h */,
 			);
-			name = JavaScriptCore;
+			path = JavaScriptCore;
 			sourceTree = "<group>";
 		};
 		681DCB881624305F00B576AA /* JSDelegationTests */ = {
@@ -424,6 +424,7 @@
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "JavascriptDemo/JavascriptDemo-Prefix.pch";
+				HEADER_SEARCH_PATHS = .;
 				INFOPLIST_FILE = "$(SRCROOT)/JavascriptDemo/JavascriptDemo-Info.plist";
 				PRODUCT_NAME = JavascriptDemo;
 				WRAPPER_EXTENSION = app;
@@ -435,6 +436,7 @@
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "JavascriptDemo/JavascriptDemo-Prefix.pch";
+				HEADER_SEARCH_PATHS = .;
 				INFOPLIST_FILE = "$(SRCROOT)/JavascriptDemo/JavascriptDemo-Info.plist";
 				PRODUCT_NAME = JavascriptDemo;
 				WRAPPER_EXTENSION = app;

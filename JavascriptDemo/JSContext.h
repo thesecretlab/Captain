@@ -24,7 +24,5 @@ typedef id(^JSExtensionFunction)(NSArray* parameters);
 
 - (id) callFunction:(NSString*)functionName withParameters:(NSArray*)parameters object:(NSObject*)thisObject error:(NSError**)error;
 
-- (void) foo:(id)parm1 bar:(id)parm2;
-
 
 @end

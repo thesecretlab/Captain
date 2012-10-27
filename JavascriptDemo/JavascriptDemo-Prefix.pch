@@ -12,5 +12,5 @@
     #import <UIKit/UIKit.h>
     #import <Foundation/Foundation.h>
 
-#import "JavascriptCore.h"
+    #import "JavaScriptCore/JavaScriptCore.h"
 #endif
