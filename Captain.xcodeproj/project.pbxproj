@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		680704E6163BCB8F007922B0 /* JSContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 681DCB7D16240CF200B576AA /* JSContext.m */; };
 		680704E7163BCB98007922B0 /* JavascriptCore-dlsym.m in Sources */ = {isa = PBXBuildFile; fileRef = 681DCB73162405DF00B576AA /* JavascriptCore-dlsym.m */; };
+		680704E9163C0AF3007922B0 /* JSTypeConversion.m in Sources */ = {isa = PBXBuildFile; fileRef = 680704E8163C0AF3007922B0 /* JSTypeConversion.m */; };
+		680704EB163C0B5F007922B0 /* JSTypeConversion.m in Sources */ = {isa = PBXBuildFile; fileRef = 680704E8163C0AF3007922B0 /* JSTypeConversion.m */; };
+		680704EF163C0C0B007922B0 /* JSObjectBridging.m in Sources */ = {isa = PBXBuildFile; fileRef = 680704EE163C0C0B007922B0 /* JSObjectBridging.m */; };
+		680704F1163C0C95007922B0 /* JSObjectBridging.m in Sources */ = {isa = PBXBuildFile; fileRef = 680704EE163C0C0B007922B0 /* JSObjectBridging.m */; };
 		681DCB851624305F00B576AA /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68B0E24C1623FDA3008D3BF8 /* SenTestingKit.framework */; };
 		681DCB861624305F00B576AA /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68B0E2281623FDA2008D3BF8 /* UIKit.framework */; };
 		681DCB871624305F00B576AA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68B0E22A1623FDA2008D3BF8 /* Foundation.framework */; };
@@ -33,6 +37,12 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		680704E8163C0AF3007922B0 /* JSTypeConversion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSTypeConversion.m; sourceTree = "<group>"; };
+		680704EA163C0B16007922B0 /* JSTypeConversion.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JSTypeConversion.h; sourceTree = "<group>"; };
+		680704EC163C0B8A007922B0 /* JSDefines.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JSDefines.h; sourceTree = "<group>"; };
+		680704ED163C0BA3007922B0 /* Captain.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Captain.h; sourceTree = "<group>"; };
+		680704EE163C0C0B007922B0 /* JSObjectBridging.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSObjectBridging.m; sourceTree = "<group>"; };
+		680704F0163C0C1A007922B0 /* JSObjectBridging.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JSObjectBridging.h; sourceTree = "<group>"; };
 		681DCB72162405DF00B576AA /* JavascriptCore-dlsym.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "JavascriptCore-dlsym.h"; sourceTree = "<group>"; };
 		681DCB73162405DF00B576AA /* JavascriptCore-dlsym.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "JavascriptCore-dlsym.m"; sourceTree = "<group>"; };
 		681DCB74162405DF00B576AA /* JavaScriptCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JavaScriptCore.h; sourceTree = "<group>"; };
@@ -121,8 +131,14 @@
 		683187FF163BC6F000281346 /* libCaptain */ = {
 			isa = PBXGroup;
 			children = (
+				680704ED163C0BA3007922B0 /* Captain.h */,
+				680704EC163C0B8A007922B0 /* JSDefines.h */,
 				681DCB7C16240CF200B576AA /* JSContext.h */,
 				681DCB7D16240CF200B576AA /* JSContext.m */,
+				680704E8163C0AF3007922B0 /* JSTypeConversion.m */,
+				680704EA163C0B16007922B0 /* JSTypeConversion.h */,
+				680704EE163C0C0B007922B0 /* JSObjectBridging.m */,
+				680704F0163C0C1A007922B0 /* JSObjectBridging.h */,
 				68318800163BC6F000281346 /* Supporting Files */,
 			);
 			name = libCaptain;
@@ -269,6 +285,8 @@
 				681DCB901624305F00B576AA /* CaptainTests.m in Sources */,
 				681DCB95162430D100B576AA /* JSContext.m in Sources */,
 				681DCB961624312B00B576AA /* JavascriptCore-dlsym.m in Sources */,
+				680704E9163C0AF3007922B0 /* JSTypeConversion.m in Sources */,
+				680704EF163C0C0B007922B0 /* JSObjectBridging.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -278,6 +296,8 @@
 			files = (
 				680704E6163BCB8F007922B0 /* JSContext.m in Sources */,
 				680704E7163BCB98007922B0 /* JavascriptCore-dlsym.m in Sources */,
+				680704EB163C0B5F007922B0 /* JSTypeConversion.m in Sources */,
+				680704F1163C0C95007922B0 /* JSObjectBridging.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

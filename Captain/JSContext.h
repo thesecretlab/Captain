@@ -8,21 +8,18 @@
 
 #import <Foundation/Foundation.h>
 
-typedef id(^JSFunction)(NSArray* parameters);
+#import "JavaScriptCore.h"
 
 @interface JSContext : NSObject
 
 - (void)loadScriptNamed:(NSString*)fileName error:(NSError**)error;
-
 - (id) evaluateScript:(NSString*)script error:(NSError**)error;
 
 - (void) addFunction:(JSFunction)function withName:(NSString*)functionName;
-
 - (void) addFunctionsWithDictionary:(NSDictionary*)functionDictionary withName:(NSString*)functionDictionaryName;
 
 - (void) setProperty:(NSString*)propertyName toObject:(id)object;
 
 - (id) callFunction:(NSString*)functionName withParameters:(NSArray*)parameters thisObject:(NSObject*)thisObject error:(NSError**)error;
-
 
 @end

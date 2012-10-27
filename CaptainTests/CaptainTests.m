@@ -7,7 +7,7 @@
 //
 
 #import "CaptainTests.h"
-#import "JSContext.h"
+#import "Captain.h"
 
 @interface TestObject : NSObject
 
