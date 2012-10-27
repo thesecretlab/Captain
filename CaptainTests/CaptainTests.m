@@ -6,7 +6,7 @@
 //  Copyright (c) 2012 Secret Lab. All rights reserved.
 //
 
-#import "JSDelegationTests.h"
+#import "CaptainTests.h"
 #import "JSContext.h"
 
 @interface TestObject : NSObject
@@ -23,9 +23,6 @@
 }
 
 - (NSNumber*)handleTestWithParameters:(NSArray*)parameters {
-    
-    
-    
     return @(1337 + [parameters[0] integerValue]);
 }
 
@@ -146,7 +143,7 @@
     
     [_context evaluateScript:code error:nil];
     
-    returnValue = [_context callFunction:@"foo" withParameters:@[@" "] object:testObject error:&error];
+    returnValue = [_context callFunction:@"foo" withParameters:@[@" "] thisObject:testObject error:&error];
     
     STAssertNil(error, @"An error %@ should not be thrown.", error);
     STAssertEqualObjects(returnValue, @"Hello test", @"The function call should execute, receive parameters, and access the 'this' object.");
@@ -161,7 +158,7 @@
     id returnValue;
     
     // Simple function test
-    JSExtensionFunction doSomethingFunction = ^(NSArray* parameters) {
+    JSFunction doSomethingFunction = ^(NSArray* parameters) {
         return @(1337);
     };
     
@@ -177,7 +174,7 @@
     
     // Parameter handling test
     
-    JSExtensionFunction addOneThousandFunction = ^(NSArray* parameters) {
+    JSFunction addOneThousandFunction = ^(NSArray* parameters) {
         NSNumber *number = parameters[0];
         return @(number.integerValue + 1000);
     };
@@ -197,10 +194,10 @@
 - (void) testFunctionCollectionRegistration {
     
     // Test adding a collection of functions
-    JSExtensionFunction doSomethingFunction = ^(NSArray* parameters) {
+    JSFunction doSomethingFunction = ^(NSArray* parameters) {
         return @(1337);
     };
-    JSExtensionFunction doSomethingElseFunction = ^(NSArray* parameters) {
+    JSFunction doSomethingElseFunction = ^(NSArray* parameters) {
         return @"Hello";
     };
     
@@ -218,6 +215,16 @@
     
     STAssertNil(error, @"An error should not be thrown");
     STAssertEqualObjects(@"1337Hello", returnValue, @"The string 1337Hello should be returned");
+    
+    code = @"(function(a) {return a+1});";
+    returnValue = [_context evaluateScript:code error:nil];
+    
+    JSFunction returnedFunction = returnValue;
+    
+    NSNumber* returnedNumber = returnedFunction(@[@(1)]);
+    
+    STAssertEqualObjects(returnedNumber, @(2), @"The JS function, when called from native code, should return 2");
+    
     
 }
 

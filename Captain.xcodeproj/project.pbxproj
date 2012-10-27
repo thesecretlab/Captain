@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		680704E6163BCB8F007922B0 /* JSContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 681DCB7D16240CF200B576AA /* JSContext.m */; };
+		680704E7163BCB98007922B0 /* JavascriptCore-dlsym.m in Sources */ = {isa = PBXBuildFile; fileRef = 681DCB73162405DF00B576AA /* JavascriptCore-dlsym.m */; };
 		681DCB851624305F00B576AA /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68B0E24C1623FDA3008D3BF8 /* SenTestingKit.framework */; };
 		681DCB861624305F00B576AA /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68B0E2281623FDA2008D3BF8 /* UIKit.framework */; };
 		681DCB871624305F00B576AA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68B0E22A1623FDA2008D3BF8 /* Foundation.framework */; };
@@ -274,6 +276,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				680704E6163BCB8F007922B0 /* JSContext.m in Sources */,
+				680704E7163BCB98007922B0 /* JavascriptCore-dlsym.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -324,9 +328,8 @@
 		68318807163BC6F000281346 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				DSTROOT = /tmp/libCaptain.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "libCaptain/libCaptain-Prefix.pch";
+				GCC_PREFIX_HEADER = "Captain/libCaptain-Prefix.pch";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -336,9 +339,8 @@
 		68318808163BC6F000281346 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				DSTROOT = /tmp/libCaptain.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "libCaptain/libCaptain-Prefix.pch";
+				GCC_PREFIX_HEADER = "Captain/libCaptain-Prefix.pch";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -355,6 +357,7 @@
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CONFIGURATION_TEMP_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -383,6 +386,7 @@
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CONFIGURATION_TEMP_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;

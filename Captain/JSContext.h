@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-typedef id(^JSExtensionFunction)(NSArray* parameters);
+typedef id(^JSFunction)(NSArray* parameters);
 
 @interface JSContext : NSObject
 
@@ -16,13 +16,13 @@ typedef id(^JSExtensionFunction)(NSArray* parameters);
 
 - (id) evaluateScript:(NSString*)script error:(NSError**)error;
 
-- (void) addFunction:(JSExtensionFunction)function withName:(NSString*)functionName;
+- (void) addFunction:(JSFunction)function withName:(NSString*)functionName;
 
 - (void) addFunctionsWithDictionary:(NSDictionary*)functionDictionary withName:(NSString*)functionDictionaryName;
 
 - (void) setProperty:(NSString*)propertyName toObject:(id)object;
 
-- (id) callFunction:(NSString*)functionName withParameters:(NSArray*)parameters object:(NSObject*)thisObject error:(NSError**)error;
+- (id) callFunction:(NSString*)functionName withParameters:(NSArray*)parameters thisObject:(NSObject*)thisObject error:(NSError**)error;
 
 
 @end

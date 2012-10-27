@@ -17,7 +17,8 @@ JSValueRef JSValueWithNSObject(JSContextRef context, id value, JSValueRef* excep
 JSStringRef JSStringCreateWithNSString(NSString* string);
 JSObjectRef JSObjectWithNSDictionary(JSContextRef context, NSDictionary* dictionary);
 JSValueRef JSValueWithNSString(JSContextRef context, NSString* string);
-JSObjectRef JSObjectWithFunctionBlock(JSContextRef context, JSExtensionFunction function);
+JSObjectRef JSObjectWithFunctionBlock(JSContextRef context, JSFunction function);
+id CallFunctionObject(JSContextRef context, JSObjectRef object, NSArray* parameters, id thisObject, JSValueRef* exception);
 
 // Given a string 'name', returns a selector
 // for a method 'handleName:'
@@ -157,7 +158,7 @@ void BlockFunctionFinalise (JSObjectRef object) {
     // The JSObject is going away;
     // Transfer the block object back into ARC, and then set it to nil;
     // this releases the block from memory
-    JSExtensionFunction function = CFBridgingRelease(JSObjectGetPrivate(object));
+    JSFunction function = CFBridgingRelease(JSObjectGetPrivate(object));
     function = nil;    
 }
 
@@ -168,7 +169,7 @@ JSValueRef BlockFunctionCallAsFunction (JSContextRef ctx, JSObjectRef function, 
     
     // Get the block object and call it; it stays managed by
     // the JSObject
-    JSExtensionFunction functionBlock = (__bridge JSExtensionFunction)(JSObjectGetPrivate(function));
+    JSFunction functionBlock = (__bridge JSFunction)(JSObjectGetPrivate(function));
     
     NSMutableArray* functionParameters = [NSMutableArray array];
     
@@ -287,6 +288,39 @@ NSDictionary* NSDictionaryWithJSObject(JSContextRef context, JSObjectRef object)
     
 }
 
+id CallFunctionObject(JSContextRef context, JSObjectRef object, NSArray* parameters, id thisObject, JSValueRef* exception) {
+    
+    JSValueRef arguments[parameters.count];
+    for (int argument = 0; argument < parameters.count; argument++) {
+        id argumentAsObject = [parameters objectAtIndex:argument];
+        JSValueRef argumentAsValue = JSValueWithNSObject(context, argumentAsObject, exception);
+        
+        if (exception != nil && *exception != nil) {
+            return nil;
+        }
+        
+        arguments[argument] = argumentAsValue;
+    }
+    
+    JSObjectRef thisObjectReference;
+    
+    if (thisObject == nil)
+        thisObjectReference = JSContextGetGlobalObject(context);
+    else
+        thisObjectReference = JSObjectMake(context, NativeObjectClass(), (void*)CFBridgingRetain(thisObject));
+
+    
+    // Finally, call the function and return its value.
+    JSValueRef returnValue = JSObjectCallAsFunction(context, object, thisObjectReference, parameters.count, arguments, exception);
+    
+    if (exception != nil && *exception != nil) {
+        return nil;
+    }
+    
+    return NSObjectWithJSValue(context, returnValue);
+    
+}
+
 // Converts a JSValue to an equivalent NSObject type.
 // Strings are converted to NSStrings, numbers to NSNumbers, etc.
 NSObject* NSObjectWithJSValue(JSContextRef context, JSValueRef value) {
@@ -310,6 +344,10 @@ NSObject* NSObjectWithJSValue(JSContextRef context, JSValueRef value) {
                 return (__bridge id)JSObjectGetPrivate((JSObjectRef)value);
             } else if (JSValueIsObjectOfClass(context, value, BlockFunctionClass())) {
                 return [NSString stringWithFormat:@"<Block Function %p>", JSObjectGetPrivate((JSObjectRef)value)];
+            } else if (JSObjectIsFunction(context, (JSObjectRef)value)) {
+                returnObjCValue = ^(NSArray* parameters) {
+                    return CallFunctionObject(context, (JSObjectRef)value, parameters, nil, nil);
+                };
             } else {
                 returnObjCValue = NSDictionaryWithJSObject(context, (JSObjectRef)value);
             }
@@ -380,7 +418,7 @@ JSValueRef JSValueWithNSObject(JSContextRef context, id value, JSValueRef* excep
 
 // Returns a JSObjectRef containing a function block. This object
 // is callable from JavaScript.
-JSObjectRef JSObjectWithFunctionBlock(JSContextRef context, JSExtensionFunction function) {
+JSObjectRef JSObjectWithFunctionBlock(JSContextRef context, JSFunction function) {
     JSObjectRef functionObject = JSObjectMake(context, BlockFunctionClass(), (void*)CFBridgingRetain([function copy]));
     return functionObject;
 }
@@ -450,7 +488,7 @@ JSObjectRef JSObjectWithFunctionBlock(JSContextRef context, JSExtensionFunction 
 
 
 // Adds a function to an object, given a function block.
-- (void) addFunction:(JSExtensionFunction)function withName:(NSString *)functionName inObject:(JSObjectRef)object {
+- (void) addFunction:(JSFunction)function withName:(NSString *)functionName inObject:(JSObjectRef)object {
     
     JSObjectRef functionObject;
     functionObject = JSObjectWithFunctionBlock(_scriptContext, function);
@@ -463,7 +501,7 @@ JSObjectRef JSObjectWithFunctionBlock(JSContextRef context, JSExtensionFunction 
 }
 
 // Adds a function to the global namespace, given a function block.
-- (void) addFunction:(JSExtensionFunction)function withName:(NSString*)functionName {
+- (void) addFunction:(JSFunction)function withName:(NSString*)functionName {
     JSObjectRef globalObject = JSContextGetGlobalObject(_scriptContext);
     
     [self addFunction:function withName:functionName inObject:globalObject];
@@ -503,11 +541,13 @@ JSObjectRef JSObjectWithFunctionBlock(JSContextRef context, JSExtensionFunction 
     JSStringRelease(propertyNameJSString);
 }
 
+
+
 // Calls a function with the given name, using the provided
 // parameters and the provided object as the 'this' variable.
 // 'functionName' is evaluated, and can therefore be
 // a complex dereference ('foo.bar.bas().functionName()').
-- (id) callFunction:(NSString*)functionName withParameters:(NSArray*)parameters object:(NSObject*)thisObject error:(NSError**)error {
+- (id) callFunction:(NSString*)functionName withParameters:(NSArray*)parameters thisObject:(NSObject*)thisObject error:(NSError**)error {
     
     JSValueRef exception = nil;
     
@@ -539,27 +579,7 @@ JSObjectRef JSObjectWithFunctionBlock(JSContextRef context, JSExtensionFunction 
         return nil;
     }
     
-    // Ok, we now know that the name we were passed in evaluates to a callable object. We'll now prepare the array of arguments and actually make the call.
-    
-    JSValueRef arguments[parameters.count];
-    for (int argument = 0; argument < parameters.count; argument++) {
-        id argumentAsObject = [parameters objectAtIndex:argument];
-        JSValueRef argumentAsValue = JSValueWithNSObject(_scriptContext, argumentAsObject, &exception);
-        
-        if (exception != nil) {
-            NSString* errorString = NSStringWithJSValue(_scriptContext, exception);
-            *error = [NSError errorWithDomain:@"JavaScript" code:0 userInfo:@{NSLocalizedDescriptionKey:errorString}];
-            return nil;
-        }
-        
-        arguments[argument] = argumentAsValue;
-    }
-    
-    // It's callable; we'll now set up the object to use as the
-    // 'this' object in the context of the function.
-    
-    JSValueRef thisObjectValue = JSValueWithNSObject(_scriptContext, thisObject, &exception);
-    JSObjectRef thisObjectReference = JSValueToObject(_scriptContext, thisObjectValue, &exception);
+    id returnValue = CallFunctionObject(_scriptContext, object, parameters, thisObject, &exception);
     
     if (exception != nil) {
         NSString* errorString = NSStringWithJSValue(_scriptContext, exception);
@@ -567,16 +587,7 @@ JSObjectRef JSObjectWithFunctionBlock(JSContextRef context, JSExtensionFunction 
         return nil;
     }
     
-    // Finally, call the function and return its value.
-    JSValueRef returnValue = JSObjectCallAsFunction(_scriptContext, object, thisObjectReference, parameters.count, arguments, &exception);
-    
-    if (exception != nil) {
-        NSString* errorString = NSStringWithJSValue(_scriptContext, exception);
-        *error = [NSError errorWithDomain:@"JavaScript" code:0 userInfo:@{NSLocalizedDescriptionKey:errorString}];
-        return nil;
-    }
-    
-    return NSObjectWithJSValue(_scriptContext, returnValue);;
+    return returnValue;
 }
 
 // Loads a script, creating an object with the name taken from
