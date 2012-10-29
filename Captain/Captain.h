@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "JavaScriptCore.h"
+#import <JavaScriptCore/JavaScriptCore.h>
 
 #import "JSDefines.h"
 #import "JSTypeConversion.h"

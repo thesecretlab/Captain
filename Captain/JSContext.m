@@ -235,6 +235,57 @@
     return YES;
 }
 
+- (BOOL)loadAllAvailableScripts:(NSError *__autoreleasing *)error {
+    
+    NSMutableArray* loadedScripts = [NSMutableArray array];
+    
+#if TARGET_OS_IPHONE
+    // If we're running on the iPhone, look for the file in the
+    // Documents folder first.
+    
+    NSURL* documentsURL = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
+    
+    NSArray* files = [[NSFileManager defaultManager] contentsOfDirectoryAtURL:documentsURL includingPropertiesForKeys:nil options:NSDirectoryEnumerationSkipsHiddenFiles error:nil];
+    
+    files = [files filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
+        
+        return [[evaluatedObject pathExtension] isEqualToString:@"js"];
+        
+    }]];
+    
+    
+    for (NSURL* url in files) {
+        NSString* fileName = [[url lastPathComponent] stringByDeletingPathExtension];
+        [self loadScriptNamed:fileName error:error];
+        
+        if (error != nil && *error != nil)
+            return NO;
+        
+        [loadedScripts addObject:fileName];
+    }
+    
+#endif
+    
+    NSArray* bundleContents = [[NSBundle bundleForClass:[self class]] URLsForResourcesWithExtension:@"js" subdirectory:nil];
+    
+    for (NSURL* url in bundleContents) {
+        NSString* fileName = [[url lastPathComponent] stringByDeletingPathExtension];
+        
+        if ([loadedScripts containsObject:fileName])
+            continue;
+        
+        [self loadScriptNamed:fileName error:error];
+        
+        if (error != nil && *error != nil)
+            return NO;
+        
+    }
+    
+    return YES;
+    
+    
+}
+
 // Tidy up the script execution context.
 - (void)dealloc {
     JSGlobalContextRelease(_scriptContext);

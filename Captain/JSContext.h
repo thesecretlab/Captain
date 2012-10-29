@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-#import "JavaScriptCore.h"
 #import "JSDefines.h"
 #import "JSTypeConversion.h"
 #import "JSObjectBridging.h"
@@ -29,5 +28,9 @@
 - (void) setProperty:(NSString*)propertyName toObject:(id)object;
 
 - (id) callFunction:(NSString*)functionName withParameters:(NSArray*)parameters thisObject:(NSObject*)thisObject error:(NSError**)error;
+
+// Loads all scripts, first checking in Documents and then in the bundle. If a file exists in Documents and an identically-named file exists in the bundle, the bundle version is not loaded.
+// Returns YES if no errors, NO otherwise.
+- (BOOL) loadAllAvailableScripts:(NSError**)error;
 
 @end

@@ -6,7 +6,7 @@
 //  Copyright (c) 2012 Secret Lab. All rights reserved.
 //
 
-#import "JavaScriptCore.h"
+#import <JavaScriptCore/JavaScriptCore.h>
 
 // Returns the shared class definition for block function wrappers.
 JSClassRef BlockFunctionClass();

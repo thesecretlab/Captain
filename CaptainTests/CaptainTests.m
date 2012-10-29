@@ -272,5 +272,20 @@
     
 }
 
+- (void) testLoadingAllScripts {
+    NSError* error = nil;
+    BOOL succeeded = NO;
+    
+    succeeded = [_context loadAllAvailableScripts:&error];
+    
+    STAssertTrue(succeeded, @"Loading all scripts should succeed");
+    STAssertNil(error, @"No error should be returned");
+    
+    NSNumber* result = [_context evaluateScript:@"TestExtensionScript.doSomething()" error:nil];
+    
+    STAssertEqualObjects(result, @123, @"The function should exist and return correctly");
+    
+}
+
 
 @end
