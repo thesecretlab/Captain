@@ -1,5 +1,5 @@
 //
-//  JSDelegationTests.h
+//  CaptainTests.h
 //  JSDelegationTests
 //
 //  Created by Jon Manning on 9/10/12.

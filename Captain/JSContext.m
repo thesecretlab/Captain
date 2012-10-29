@@ -1,6 +1,6 @@
 //
 //  JSContext.m
-//  JavascriptDemo
+//  Captain
 //
 //  Created by Jon Manning on 9/10/12.
 //  Copyright (c) 2012 Secret Lab. All rights reserved.
@@ -18,7 +18,7 @@
     if (self) {
         _scriptContext = JSGlobalContextCreate(NULL);
         
-        // Register a simple 'log' method
+        // Register a simple 'log' method that scripts can use
         [self addFunction:^id(NSArray *parameters) {
             NSLog(@"%@", [parameters componentsJoinedByString:@" "]);
             
@@ -192,10 +192,14 @@
 #if TARGET_OS_IPHONE
     // If we're running on the iPhone, look for the file in the
     // Documents folder first.
+    
     NSURL* documentsURL = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
     
     scriptURL = [documentsURL URLByAppendingPathComponent:fileName];
-    scriptURL = [scriptURL URLByAppendingPathExtension:@"js"];
+    
+    // Add a .js extension to the name, if necessary.
+    if ([[fileName pathExtension] isEqualToString:@"js"] == NO)
+        scriptURL = [scriptURL URLByAppendingPathExtension:@"js"];
     
     if ([[NSFileManager defaultManager] fileExistsAtPath:[scriptURL path]] == NO)
         scriptURL = nil;    
@@ -217,7 +221,7 @@
     if (scriptText == nil)
         return NO;
     
-    JSStringRef scriptNameJSString = JSStringCreateWithNSString(fileName);
+    JSStringRef scriptNameJSString = JSStringCreateWithNSString([fileName stringByDeletingPathExtension]);
     
     // Create an object to use that any variables will go into
     JSObjectRef object = JSObjectMake(_scriptContext, NULL, NULL);

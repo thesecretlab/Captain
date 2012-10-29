@@ -8,5 +8,8 @@
 
 #import "JavaScriptCore.h"
 
+// Returns the shared class definition for block function wrappers.
 JSClassRef BlockFunctionClass();
+
+// Returns the shared class definition for native object wrappers.
 JSClassRef NativeObjectClass();

@@ -1,5 +1,5 @@
 //
-//  JSDelegationTests.m
+//  CaptainTests.m
 //  JSDelegationTests
 //
 //  Created by Jon Manning on 9/10/12.
@@ -136,7 +136,7 @@
     STAssertNil(error, @"An error %@ should not be thrown.", error);
     STAssertEqualObjects(returnValue, @(2337), @"The method should be called and handle parameters.");
     
-    // Functions in JS can be called into.
+    // Functions in JS can be called into, and be provided with a 'this' object to access.
     code = @"function foo(a) { return this.name + a + \"test\" }";
     error = nil;
     testObject.name = @"Hello";
