@@ -145,8 +145,10 @@
     
     // Could we find it?
     if (exception != nil) {
+        NSString* errorString = NSStringWithJSValue(_scriptContext, exception);
+        NSLog(@"%@", errorString);
         if (error != nil) {
-            NSString* errorString = NSStringWithJSValue(_scriptContext, exception);
+            
             *error = [NSError errorWithDomain:@"JavaScript" code:0 userInfo:@{NSLocalizedDescriptionKey:errorString}];
         }
         return nil;
@@ -161,8 +163,10 @@
     JSObjectRef object = JSValueToObject(_scriptContext, evaluatedValue, &exception);
     
     if (exception != nil) {
+        NSString* errorString = NSStringWithJSValue(_scriptContext, exception);
+        NSLog(@"%@", errorString);
         if (error != nil) {
-            NSString* errorString = NSStringWithJSValue(_scriptContext, exception);
+            
             *error = [NSError errorWithDomain:@"JavaScript" code:0 userInfo:@{NSLocalizedDescriptionKey:errorString}];
         }
         return nil;
@@ -170,7 +174,12 @@
     
     // Is it a _callable_ object?
     if (JSObjectIsFunction(_scriptContext, object) == NO && error != nil) {
-        *error = [NSError errorWithDomain:@"JavaScript" code:0 userInfo:@{NSLocalizedDescriptionKey:@"Object is not callable"}];
+        NSString* errorString = [NSString stringWithFormat:@"%@ is not callable", functionName];
+        NSLog(@"%@", errorString);
+        if (error != nil) {
+            
+            *error = [NSError errorWithDomain:@"JavaScript" code:0 userInfo:@{NSLocalizedDescriptionKey:errorString}];
+        }
         return nil;
     }
     
@@ -179,8 +188,10 @@
     
     // Was there an exception?
     if (exception != nil) {
+        NSString* errorString = NSStringWithJSValue(_scriptContext, exception);
+        NSLog(@"%@", errorString);
         if (error != nil) {
-            NSString* errorString = NSStringWithJSValue(_scriptContext, exception);
+            
             *error = [NSError errorWithDomain:@"JavaScript" code:0 userInfo:@{NSLocalizedDescriptionKey:errorString}];
         }
         return nil;
@@ -248,9 +259,7 @@
 
 - (id) callFunction:(NSString*)functionName inSuite:(NSString*)suiteName thisObject:(NSObject*)thisObject error:(NSError**) error {
     
-    functionName = [suiteName stringByAppendingFormat:@".%@", functionName];
-    
-    return [self callFunction:functionName withParameters:nil thisObject:thisObject error:error];
+    return [self callFunction:functionName inSuite:suiteName parameters:nil thisObject:thisObject error:error];
     
 }
 
@@ -260,6 +269,28 @@
     return [self callFunction:functionName withParameters:parameters thisObject:thisObject error:error];
 }
 
+- (JSObjectRef) _objectRefForProperty:(NSString*)propertyName inObject:(JSObjectRef)object {
+    
+    if (propertyName == nil)
+        return NULL;
+    
+    JSStringRef propertyNameJS = JSStringCreateWithNSString(propertyName);
+    
+    if (object == nil)
+        object = JSContextGetGlobalObject(_scriptContext);
+    
+    JSValueRef exception = nil;
+    
+    JSValueRef value = JSObjectGetProperty(_scriptContext, object, propertyNameJS, &exception);
+    
+    JSStringRelease(propertyNameJS);
+    
+    if (exception != nil)
+        return nil;
+    
+    return JSValueToObject(_scriptContext, value, NULL);
+    
+}
 
 - (BOOL)loadAllAvailableScripts:(NSError *__autoreleasing *)error {
     
@@ -304,6 +335,28 @@
         
         if (error != nil && *error != nil)
             return NO;
+        
+        [loadedScripts addObject:fileName];
+        
+    }
+    
+    // All loaded scripts get their "load" function called
+    
+    for (NSString* scriptName in loadedScripts) {
+        
+        JSObjectRef object = [self _objectRefForProperty:scriptName inObject:nil];
+        JSObjectRef loadFunction = [self _objectRefForProperty:@"load" inObject:object];
+        
+        if (loadFunction == NULL)
+            continue;
+        
+        JSValueRef exception = nil;
+        
+        JSObjectCallAsFunction(_scriptContext, loadFunction, NULL, 0, NULL, &exception);
+        
+        if (exception != nil) {
+            NSLog(@"Error calling load() for %@: %@", scriptName, NSStringWithJSValue(_scriptContext, exception));
+        }
         
     }
     
