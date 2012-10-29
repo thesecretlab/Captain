@@ -132,6 +132,9 @@
 // a complex dereference ('foo.bar.bas().functionName()').
 - (id) callFunction:(NSString*)functionName withParameters:(NSArray*)parameters thisObject:(NSObject*)thisObject error:(NSError**)error {
     
+    if (functionName == nil)
+        return nil;
+    
     JSValueRef exception = nil;
     
     // Evaluate which object this function name is referring to
@@ -141,11 +144,14 @@
     JSStringRelease(functionNameJSString);
     
     // Could we find it?
-    if (exception != nil && error != nil) {
-        NSString* errorString = NSStringWithJSValue(_scriptContext, exception);
-        *error = [NSError errorWithDomain:@"JavaScript" code:0 userInfo:@{NSLocalizedDescriptionKey:errorString}];
+    if (exception != nil) {
+        if (error != nil) {
+            NSString* errorString = NSStringWithJSValue(_scriptContext, exception);
+            *error = [NSError errorWithDomain:@"JavaScript" code:0 userInfo:@{NSLocalizedDescriptionKey:errorString}];
+        }
         return nil;
     }
+    
     
     // We have the value that it evaluated to; now we need to
     // if figure out if it's a callable object.
@@ -154,9 +160,11 @@
     // Is it an object?
     JSObjectRef object = JSValueToObject(_scriptContext, evaluatedValue, &exception);
     
-    if (exception != nil && error != nil) {
-        NSString* errorString = NSStringWithJSValue(_scriptContext, exception);
-        *error = [NSError errorWithDomain:@"JavaScript" code:0 userInfo:@{NSLocalizedDescriptionKey:errorString}];
+    if (exception != nil) {
+        if (error != nil) {
+            NSString* errorString = NSStringWithJSValue(_scriptContext, exception);
+            *error = [NSError errorWithDomain:@"JavaScript" code:0 userInfo:@{NSLocalizedDescriptionKey:errorString}];
+        }
         return nil;
     }
     
@@ -170,9 +178,11 @@
     id returnValue = CallFunctionObject(_scriptContext, object, parameters, thisObject, &exception);
     
     // Was there an exception?
-    if (exception != nil && error != nil) {
-        NSString* errorString = NSStringWithJSValue(_scriptContext, exception);
-        *error = [NSError errorWithDomain:@"JavaScript" code:0 userInfo:@{NSLocalizedDescriptionKey:errorString}];
+    if (exception != nil) {
+        if (error != nil) {
+            NSString* errorString = NSStringWithJSValue(_scriptContext, exception);
+            *error = [NSError errorWithDomain:@"JavaScript" code:0 userInfo:@{NSLocalizedDescriptionKey:errorString}];
+        }
         return nil;
     }
     
@@ -234,6 +244,22 @@
     
     return YES;
 }
+
+
+- (id) callFunction:(NSString*)functionName inSuite:(NSString*)suiteName thisObject:(NSObject*)thisObject error:(NSError**) error {
+    
+    functionName = [suiteName stringByAppendingFormat:@".%@", functionName];
+    
+    return [self callFunction:functionName withParameters:nil thisObject:thisObject error:error];
+    
+}
+
+- (id) callFunction:(NSString*)functionName inSuite:(NSString*)suiteName parameters:(NSArray*)parameters thisObject:(NSObject*)thisObject error:(NSError**) error {
+    functionName = [suiteName stringByAppendingFormat:@".%@", functionName];
+    
+    return [self callFunction:functionName withParameters:parameters thisObject:thisObject error:error];
+}
+
 
 - (BOOL)loadAllAvailableScripts:(NSError *__autoreleasing *)error {
     

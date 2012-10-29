@@ -27,6 +27,12 @@
 
 - (void) setProperty:(NSString*)propertyName toObject:(id)object;
 
+
+- (id) callFunction:(NSString*)functionName inSuite:(NSString*)suiteName thisObject:(NSObject*)thisObject error:(NSError**) error;
+
+- (id) callFunction:(NSString*)functionName inSuite:(NSString*)suiteName parameters:(NSArray*)parameters thisObject:(NSObject*)thisObject error:(NSError**) error;
+
+
 - (id) callFunction:(NSString*)functionName withParameters:(NSArray*)parameters thisObject:(NSObject*)thisObject error:(NSError**)error;
 
 // Loads all scripts, first checking in Documents and then in the bundle. If a file exists in Documents and an identically-named file exists in the bundle, the bundle version is not loaded.

@@ -8,3 +8,9 @@
 
 typedef id(^JSFunction)(NSArray* parameters);
 
+@protocol JSCallableObject <NSObject>
+
+- (NSDictionary*) handlersForScriptMethods;
+
+@end
+

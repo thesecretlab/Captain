@@ -44,13 +44,21 @@ bool NativeObjectHasProperty(JSContextRef ctx, JSObjectRef object, JSStringRef p
     
     SEL getterSelector = NSSelectorFromString(key);
     
+    if ([internalObject conformsToProtocol:@protocol(JSCallableObject)]) {
+        id<JSCallableObject> callableObject = internalObject;
+        
+        if ([[callableObject handlersForScriptMethods] objectForKey:key])
+            return YES;
+    }
+    
     if ([internalObject respondsToSelector:getterSelector]) {
         return YES;
-    } else {
+    }
+        
         // It's possible it has a method for it
         SEL methodCallSelector = MethodCallSelectorForName(key);
         return [internalObject respondsToSelector:methodCallSelector];
-    }
+    
 }
 
 // Attempts to call setValue:forKey: on a native object given a
@@ -88,6 +96,24 @@ JSValueRef NativeObjectGetProperty (JSContextRef ctx, JSObjectRef object, JSStri
     id internalObject = (__bridge id)(JSObjectGetPrivate(object));
     
     NSString* key = NSStringWithJSString(propertyName);
+    
+    // If this object is callable, does it provide a handler block for 'propertyName'?
+    
+    if ([internalObject conformsToProtocol:@protocol(JSCallableObject)]) {
+        id<JSCallableObject> callableObject = internalObject;
+        
+        JSFunction handlerBlock = [[callableObject handlersForScriptMethods] objectForKey:key];
+        
+        if (handlerBlock) {
+            return (JSValueRef)JSObjectWithFunctionBlock(ctx, ^id(NSArray *parameters) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+                return handlerBlock(parameters);
+#pragma clang diagnostic pop
+            });
+        }
+        
+    }
     
     // Does this object respond to the getter selector for 'propertyName'?
     SEL getterSelector = NSSelectorFromString(key);

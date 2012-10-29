@@ -9,7 +9,7 @@
 #import "CaptainTests.h"
 #import "Captain.h"
 
-@interface TestObject : NSObject
+@interface TestObject : NSObject <JSCallableObject>
 
 @property (strong) NSString* name;
 @property (strong) TestObject* childObject;
@@ -24,6 +24,12 @@
 
 - (NSNumber*)handleTestWithParameters:(NSArray*)parameters {
     return @(1337 + [parameters[0] integerValue]);
+}
+
+- (NSDictionary *)handlersForScriptMethods {
+    return @{@"hello" : ^(NSArray* parameters) {
+        return @"yes";
+    }};
 }
 
 @end
@@ -147,6 +153,15 @@
     
     STAssertNil(error, @"An error %@ should not be thrown.", error);
     STAssertEqualObjects(returnValue, @"Hello test", @"The function call should execute, receive parameters, and access the 'this' object.");
+    
+    // Objects can vend a handler block
+    code = @"testObject.hello()";
+    error = nil;
+    
+    returnValue = [_context evaluateScript:code error:&error];
+    
+    STAssertNil(error, @"An error %@ should not be thrown.", error);
+    STAssertEqualObjects(returnValue, @"yes", @"The function call should return the correct value.");
     
 }
 
