@@ -3,7 +3,7 @@ Captain
 
 *Captain* is a lightweight library that lets you add hooking support to Objective-C applications using JavaScript. 
 
-To learn what it can be used for, and how to use it, check out the [blog post](http://blog.secretlab.com.au/2012/06/23/glowing/ "Captain on Secret Lab's blog").
+To learn what it can be used for, and how to use it, check out the [blog post](http://blog.secretlab.com.au/?p=398 "Captain on Secret Lab's blog").
 
 Please open an issue on GitHub if you'd like to make a request.
 
