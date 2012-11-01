@@ -1,9 +1,16 @@
 Object.prototype.extends = function(superclass) {
+    // Copy all functions from 'superclass' into 'this'
     for (var name in superclass) {
-        this[name] = superclass[name];
+        if (typeof superclass[name] == "function")
+            this[name] = superclass[name];
     }
+    
+    // And set the prototype
     this.prototype = superclass;
 };
+
+
+// We're defining two modules here - 'MainModule', and 'SubModule' (which inherits SubModule)
 
 this.MainModule = {};
 
@@ -20,7 +27,4 @@ SubModule.extends(MainModule);
 SubModule.doSomething = function() {
     return this.prototype.doSomething() + "Bar, " + this.name;
 }
-
-SubModule.doSomething();
-SubModule.doSomethingImpressive();
 

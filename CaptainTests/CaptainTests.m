@@ -329,7 +329,7 @@
     returnValue = [_context callFunction:@"doSomethingImpressive" inSuite:@"SubModule" thisObject:testObject error:&error];
     
     STAssertNil(error, @"An error %@ should not be thrown", error);
-    STAssertEqualObjects(returnValue, @"Yes", nil);
+    STAssertEqualObjects(returnValue, @"Yes", @"The prototype chain should be invoked.");
 }
 
 
