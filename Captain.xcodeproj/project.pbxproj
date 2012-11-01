@@ -22,6 +22,7 @@
 		681DCB961624312B00B576AA /* JavascriptCore-dlsym.m in Sources */ = {isa = PBXBuildFile; fileRef = 681DCB73162405DF00B576AA /* JavascriptCore-dlsym.m */; };
 		681DCB9B16244C3100B576AA /* TestExtensionScript.js in Resources */ = {isa = PBXBuildFile; fileRef = 681DCB9A16244C3100B576AA /* TestExtensionScript.js */; };
 		683187FE163BC6F000281346 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68B0E22A1623FDA2008D3BF8 /* Foundation.framework */; };
+		689A69221642A2B600EA8D02 /* InheritanceTests.js in Resources */ = {isa = PBXBuildFile; fileRef = 689A691F1642A1C100EA8D02 /* InheritanceTests.js */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -63,6 +64,7 @@
 		681DCB9A16244C3100B576AA /* TestExtensionScript.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = TestExtensionScript.js; sourceTree = "<group>"; };
 		683187FD163BC6F000281346 /* libCaptain.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libCaptain.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		68318801163BC6F000281346 /* libCaptain-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "libCaptain-Prefix.pch"; sourceTree = "<group>"; };
+		689A691F1642A1C100EA8D02 /* InheritanceTests.js */ = {isa = PBXFileReference; explicitFileType = sourcecode.javascript; fileEncoding = 4; path = InheritanceTests.js; sourceTree = "<group>"; };
 		68B0E2281623FDA2008D3BF8 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		68B0E22A1623FDA2008D3BF8 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		68B0E22C1623FDA2008D3BF8 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -114,6 +116,7 @@
 				681DCB8F1624305F00B576AA /* CaptainTests.m */,
 				681DCB891624305F00B576AA /* Supporting Files */,
 				681DCB9A16244C3100B576AA /* TestExtensionScript.js */,
+				689A691F1642A1C100EA8D02 /* InheritanceTests.js */,
 			);
 			path = CaptainTests;
 			sourceTree = "<group>";
@@ -256,6 +259,7 @@
 			files = (
 				681DCB8D1624305F00B576AA /* InfoPlist.strings in Resources */,
 				681DCB9B16244C3100B576AA /* TestExtensionScript.js in Resources */,
+				689A69221642A2B600EA8D02 /* InheritanceTests.js in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

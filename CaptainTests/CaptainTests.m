@@ -302,5 +302,35 @@
     
 }
 
+- (void) testInheritance {
+    
+    NSError* error = nil;
+    id returnValue = nil;
+    
+    returnValue = [_context evaluateFile:@"InheritanceTests" error:&error];
+    
+    STAssertNil(error, @"An error %@ should not be thrown", error);
+    
+    TestObject* testObject = [[TestObject alloc] init];
+    
+    testObject.name = @"Bob";
+    
+    returnValue = nil;
+    error = nil;
+    
+    returnValue = [_context callFunction:@"doSomething" inSuite:@"SubModule" thisObject:testObject error:&error];
+    
+    STAssertNil(error, @"An error %@ should not be thrown", error);
+    STAssertEqualObjects(returnValue, @"FooBar, Bob", nil);
+    
+    returnValue = nil;
+    error = nil;
+    
+    returnValue = [_context callFunction:@"doSomethingImpressive" inSuite:@"SubModule" thisObject:testObject error:&error];
+    
+    STAssertNil(error, @"An error %@ should not be thrown", error);
+    STAssertEqualObjects(returnValue, @"Yes", nil);
+}
+
 
 @end

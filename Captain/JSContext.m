@@ -44,7 +44,22 @@
     
     if (exception != nil) {
         if (error != NULL) {
-            NSString* errorString = NSStringWithJSValue(_scriptContext, exception);
+            
+            NSDictionary* errorObject = (id)NSObjectWithJSValue(_scriptContext, exception);
+            
+            NSString* errorString;
+            
+            if ([errorObject isKindOfClass:[NSDictionary class]]) {
+                errorString = NSStringWithJSValue(_scriptContext, exception);
+                
+                errorString = [NSString stringWithFormat:@"Line %@: %@", [errorObject objectForKey:@"line"], errorString];
+            } else if ([errorObject isKindOfClass:[NSString class]]) {
+                errorString = (id)errorObject;
+            } else {
+                errorString = @"Unknown error";
+            }
+            
+            
             *error = [NSError errorWithDomain:@"JavaScript" code:0 userInfo:@{NSLocalizedDescriptionKey:errorString}];
         }
         
@@ -131,6 +146,11 @@
 // 'functionName' is evaluated, and can therefore be
 // a complex dereference ('foo.bar.bas().functionName()').
 - (id) callFunction:(NSString*)functionName withParameters:(NSArray*)parameters thisObject:(NSObject*)thisObject error:(NSError**)error {
+    return [self _callFunction:functionName withParameters:parameters thisObject:thisObject prototype:NULL error:error];
+}
+
+
+- (id) _callFunction:(NSString*)functionName withParameters:(NSArray*)parameters thisObject:(NSObject*)thisObject prototype:(JSObjectRef)prototype error:(NSError**)error {
     
     if (functionName == nil)
         return nil;
@@ -184,7 +204,7 @@
     }
     
     // Ok, call it!
-    id returnValue = CallFunctionObject(_scriptContext, object, parameters, thisObject, &exception);
+    id returnValue = CallFunctionObject(_scriptContext, object, parameters, thisObject, prototype, &exception);
     
     // Was there an exception?
     if (exception != nil) {
@@ -208,6 +228,16 @@
 // built-in JavaScript files.
 - (BOOL)loadScriptNamed:(NSString*)fileName error:(NSError**)error  {
     
+    JSStringRef scriptName = JSStringCreateWithNSString([fileName stringByDeletingPathExtension]);
+    JSObjectRef globalObject = JSContextGetGlobalObject(_scriptContext);
+    JSObjectRef containerObject = JSObjectMake(_scriptContext, NULL, NULL);
+    JSObjectSetProperty(_scriptContext, globalObject, scriptName, containerObject, 0, NULL);
+    
+    return [self evaluateFile:fileName error:error] != nil;
+    
+}
+
+- (id) evaluateFile:(NSString*)fileName error:(NSError**)error {
     NSURL* scriptURL = nil;
     
 #if TARGET_OS_IPHONE
@@ -223,7 +253,7 @@
         scriptURL = [scriptURL URLByAppendingPathExtension:@"js"];
     
     if ([[NSFileManager defaultManager] fileExistsAtPath:[scriptURL path]] == NO)
-        scriptURL = nil;    
+        scriptURL = nil;
 #endif
     
     // Else fall back to the built-in resources.
@@ -233,7 +263,7 @@
     
     // Still couldn't find it? Give up.
     if (scriptURL == nil) {
-        return NO;
+        return nil;
     }
     
     // Load the script and evaluate it.
@@ -242,22 +272,23 @@
     if (scriptText == nil)
         return NO;
     
-    JSStringRef scriptNameJSString = JSStringCreateWithNSString([fileName stringByDeletingPathExtension]);
+    id returnValue = [self evaluateScript:scriptText error:error];
     
-    // Create an object to use that any variables will go into
-    JSObjectRef object = JSObjectMake(_scriptContext, NULL, NULL);
-    JSObjectRef globalObject = JSContextGetGlobalObject(_scriptContext);
-    JSObjectSetProperty(_scriptContext, globalObject, scriptNameJSString, object, 0, NULL);
+    if (error && *error != nil) {
+        // prepend the file name to the error's description key
+        NSString* description = [*error localizedDescription];
+        description = [NSString stringWithFormat:@"%@, %@", [scriptURL lastPathComponent], description];
+        
+        *error = [NSError errorWithDomain:@"JavaScript" code:0 userInfo:@{NSLocalizedDescriptionKey:description}];
+    }
     
-    JSStringRelease(scriptNameJSString);
+    return returnValue;
     
-    [self evaluateScript:scriptText error:error thisObject:object];
-    
-    return YES;
 }
 
 
 - (id) callFunction:(NSString*)functionName inSuite:(NSString*)suiteName thisObject:(NSObject*)thisObject error:(NSError**) error {
+    
     
     return [self callFunction:functionName inSuite:suiteName parameters:nil thisObject:thisObject error:error];
     
@@ -266,7 +297,9 @@
 - (id) callFunction:(NSString*)functionName inSuite:(NSString*)suiteName parameters:(NSArray*)parameters thisObject:(NSObject*)thisObject error:(NSError**) error {
     functionName = [suiteName stringByAppendingFormat:@".%@", functionName];
     
-    return [self callFunction:functionName withParameters:parameters thisObject:thisObject error:error];
+    JSObjectRef suiteObject = [self _objectRefForProperty:suiteName inObject:NULL];
+    
+    return [self _callFunction:functionName withParameters:parameters thisObject:thisObject prototype:suiteObject error:error];
 }
 
 - (JSObjectRef) _objectRefForProperty:(NSString*)propertyName inObject:(JSObjectRef)object {

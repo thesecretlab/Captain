@@ -74,7 +74,7 @@ NSDictionary* NSDictionaryWithJSObject(JSContextRef context, JSObjectRef object)
     
 }
 
-id CallFunctionObject(JSContextRef context, JSObjectRef object, NSArray* parameters, id thisObject, JSValueRef* exception) {
+id CallFunctionObject(JSContextRef context, JSObjectRef object, NSArray* parameters, id thisObject, JSObjectRef prototype, JSValueRef* exception) {
     
     // Build a C array containing the parameters, each converted to JSValueRefs.
     JSValueRef arguments[parameters.count];
@@ -98,6 +98,9 @@ id CallFunctionObject(JSContextRef context, JSObjectRef object, NSArray* paramet
         thisObjectReference = JSContextGetGlobalObject(context);
     else
         thisObjectReference = JSObjectMake(context, NativeObjectClass(), (void*)CFBridgingRetain(thisObject));
+    
+    if (prototype != NULL)
+        JSObjectSetPrototype(context, thisObjectReference, prototype);
     
     // Finally, call the function and return its value.
     JSValueRef returnValue = JSObjectCallAsFunction(context, object, thisObjectReference, parameters.count, arguments, exception);
@@ -136,7 +139,7 @@ NSObject* NSObjectWithJSValue(JSContextRef context, JSValueRef value) {
                 return [NSString stringWithFormat:@"<Block Function %p>", JSObjectGetPrivate((JSObjectRef)value)];
             } else if (JSObjectIsFunction(context, (JSObjectRef)value)) {
                 returnObjCValue = ^(NSArray* parameters) {
-                    return CallFunctionObject(context, (JSObjectRef)value, parameters, nil, nil);
+                    return CallFunctionObject(context, (JSObjectRef)value, parameters, nil, NULL, nil);
                 };
             } else {
                 returnObjCValue = NSDictionaryWithJSObject(context, (JSObjectRef)value);

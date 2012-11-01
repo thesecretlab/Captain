@@ -18,5 +18,5 @@ JSStringRef JSStringCreateWithNSString(NSString* string);
 JSObjectRef JSObjectWithNSDictionary(JSContextRef context, NSDictionary* dictionary);
 JSValueRef JSValueWithNSString(JSContextRef context, NSString* string);
 JSObjectRef JSObjectWithFunctionBlock(JSContextRef context, JSFunction function);
-id CallFunctionObject(JSContextRef context, JSObjectRef object, NSArray* parameters, id thisObject, JSValueRef* exception);
+id CallFunctionObject(JSContextRef context, JSObjectRef object, NSArray* parameters, id thisObject, JSObjectRef prototype, JSValueRef* exception);
 

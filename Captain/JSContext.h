@@ -20,6 +20,9 @@
 // Executes the provided script, and returns the resulting value.
 - (id) evaluateScript:(NSString*)script error:(NSError**)error;
 
+// Reads and executes the named file, using the global object as 'this', and looking first in the Documents directory, followed by the bundle resources.
+- (id) evaluateFile:(NSString*)fileName error:(NSError**)error;
+
 // Registers a single function block in the JavaScript context, associating it with the given name. The function will be added to the Javascript context's global namespace.
 - (void) addFunction:(JSFunction)function withName:(NSString*)functionName;
 
@@ -31,7 +34,6 @@
 - (id) callFunction:(NSString*)functionName inSuite:(NSString*)suiteName thisObject:(NSObject*)thisObject error:(NSError**) error;
 
 - (id) callFunction:(NSString*)functionName inSuite:(NSString*)suiteName parameters:(NSArray*)parameters thisObject:(NSObject*)thisObject error:(NSError**) error;
-
 
 - (id) callFunction:(NSString*)functionName withParameters:(NSArray*)parameters thisObject:(NSObject*)thisObject error:(NSError**)error;
 
