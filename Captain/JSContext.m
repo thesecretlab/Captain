@@ -376,6 +376,7 @@
     // All loaded scripts get their "load" function called
     
     for (NSString* scriptName in loadedScripts) {
+        NSLog(@"Loaded script %@", scriptName);
         
         JSObjectRef object = [self _objectRefForProperty:scriptName inObject:nil];
         JSObjectRef loadFunction = [self _objectRefForProperty:@"load" inObject:object];
@@ -391,7 +392,10 @@
             NSLog(@"Error calling load() for %@: %@", scriptName, NSStringWithJSValue(_scriptContext, exception));
         }
         
+        
+        
     }
+    
     
     return YES;
     
