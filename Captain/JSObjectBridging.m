@@ -54,10 +54,18 @@ bool NativeObjectHasProperty(JSContextRef ctx, JSObjectRef object, JSStringRef p
     if ([internalObject respondsToSelector:getterSelector]) {
         return YES;
     }
+    
+    // If it implements the objectForKey: method, try that
+    if ([internalObject respondsToSelector:@selector(objectForKey:)]) {
+        if ([internalObject objectForKey:key])
+            return YES;
+    }
         
-        // It's possible it has a method for it
-        SEL methodCallSelector = MethodCallSelectorForName(key);
-        return [internalObject respondsToSelector:methodCallSelector];
+    // It's possible it has a method for it
+    SEL methodCallSelector = MethodCallSelectorForName(key);
+    return [internalObject respondsToSelector:methodCallSelector];
+
+    
     
 }
 
@@ -73,12 +81,19 @@ bool NativeObjectSetProperty (JSContextRef ctx, JSObjectRef object, JSStringRef 
     NSString* key = NSStringWithJSString(propertyName);
     SEL setterSelector = PropertySetterSelectorForName(key);
     
+    NSObject* objectValue = NSObjectWithJSValue(ctx, value);
+    
     if ([internalObject respondsToSelector:setterSelector]) {
-        NSObject* objectValue = NSObjectWithJSValue(ctx, value);
+        
         
         [internalObject setValue:objectValue forKey:key];
         
         return YES;
+    } else if ([internalObject respondsToSelector:@selector(setObject:forKey:)]) {
+        
+        [internalObject setObject:objectValue forKey:key];
+        return YES;
+        
     } else {
         *exception  = JSValueWithNSString(ctx, [NSString stringWithFormat:@"%@ has no setter method '%@'", [internalObject class], NSStringFromSelector(setterSelector)]);
         return NO;
@@ -113,6 +128,12 @@ JSValueRef NativeObjectGetProperty (JSContextRef ctx, JSObjectRef object, JSStri
             });
         }
         
+    }
+    
+    // Does this object respond to objectForKey:, and does this return something?
+    id returnedObjectForKey = nil;
+    if ([internalObject respondsToSelector:@selector(objectForKey:)] && (returnedObjectForKey = [internalObject objectForKey:key])) {
+        return  JSValueWithNSObject(ctx, returnedObjectForKey, exception);
     }
     
     // Does this object respond to the getter selector for 'propertyName'?
