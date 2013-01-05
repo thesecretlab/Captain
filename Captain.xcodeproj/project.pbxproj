@@ -13,6 +13,7 @@
 		680704EB163C0B5F007922B0 /* JSTypeConversion.m in Sources */ = {isa = PBXBuildFile; fileRef = 680704E8163C0AF3007922B0 /* JSTypeConversion.m */; };
 		680704EF163C0C0B007922B0 /* JSObjectBridging.m in Sources */ = {isa = PBXBuildFile; fileRef = 680704EE163C0C0B007922B0 /* JSObjectBridging.m */; };
 		680704F1163C0C95007922B0 /* JSObjectBridging.m in Sources */ = {isa = PBXBuildFile; fileRef = 680704EE163C0C0B007922B0 /* JSObjectBridging.m */; };
+		68122E12168C785C00E70DF3 /* Core.js in Sources */ = {isa = PBXBuildFile; fileRef = 6826C9BF168B078D0020A018 /* Core.js */; };
 		681DCB851624305F00B576AA /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68B0E24C1623FDA3008D3BF8 /* SenTestingKit.framework */; };
 		681DCB861624305F00B576AA /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68B0E2281623FDA2008D3BF8 /* UIKit.framework */; };
 		681DCB871624305F00B576AA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68B0E22A1623FDA2008D3BF8 /* Foundation.framework */; };
@@ -62,6 +63,7 @@
 		681DCB8F1624305F00B576AA /* CaptainTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CaptainTests.m; sourceTree = "<group>"; };
 		681DCB911624305F00B576AA /* CaptainTests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CaptainTests-Prefix.pch"; sourceTree = "<group>"; };
 		681DCB9A16244C3100B576AA /* TestExtensionScript.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = TestExtensionScript.js; sourceTree = "<group>"; };
+		6826C9BF168B078D0020A018 /* Core.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = Core.js; sourceTree = "<group>"; };
 		683187FD163BC6F000281346 /* libCaptain.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libCaptain.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		68318801163BC6F000281346 /* libCaptain-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "libCaptain-Prefix.pch"; sourceTree = "<group>"; };
 		689A691F1642A1C100EA8D02 /* InheritanceTests.js */ = {isa = PBXFileReference; explicitFileType = sourcecode.javascript; fileEncoding = 4; path = InheritanceTests.js; sourceTree = "<group>"; };
@@ -143,6 +145,7 @@
 				680704EE163C0C0B007922B0 /* JSObjectBridging.m */,
 				680704F0163C0C1A007922B0 /* JSObjectBridging.h */,
 				68318800163BC6F000281346 /* Supporting Files */,
+				6826C9BF168B078D0020A018 /* Core.js */,
 			);
 			name = libCaptain;
 			path = Captain;
@@ -291,6 +294,7 @@
 				681DCB961624312B00B576AA /* JavascriptCore-dlsym.m in Sources */,
 				680704E9163C0AF3007922B0 /* JSTypeConversion.m in Sources */,
 				680704EF163C0C0B007922B0 /* JSObjectBridging.m in Sources */,
+				68122E12168C785C00E70DF3 /* Core.js in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

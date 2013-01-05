@@ -245,7 +245,6 @@
     
     STAssertNil(error, @"An error should not be thrown");
     STAssertEqualObjects(@"1337Hello", returnValue, @"The string 1337Hello should be returned");
-        
     
 }
 
@@ -307,7 +306,7 @@
     NSError* error = nil;
     id returnValue = nil;
     
-    returnValue = [_context evaluateFile:@"InheritanceTests" error:&error];
+    returnValue = [_context evaluateFileNamed:@"InheritanceTests" error:&error];
     
     STAssertNil(error, @"An error %@ should not be thrown", error);
     
@@ -330,6 +329,61 @@
     
     STAssertNil(error, @"An error %@ should not be thrown", error);
     STAssertEqualObjects(returnValue, @"Yes", @"The prototype chain should be invoked.");
+}
+
+- (void) testCallingOtherObjects {
+    
+    NSError* error = nil;
+    id returnValue = nil;
+    
+    returnValue  = [_context evaluateFileNamed:@"InheritanceTests" error:&error];
+    
+    STAssertNil(error, @"An error %@ should not be thrown");
+    
+    TestObject* object = [[TestObject alloc] init];
+    
+    [object useScriptObjectNamed:@"OtherModule" inScriptContext:_context];
+    
+    NSString* testParameter = @"Hello";
+    
+    returnValue = [object callScriptFunction:@"testFunction" parameters:@[testParameter] error:&error];
+    
+    STAssertNil(error, @"An error %@ should not be thrown");
+    STAssertEqualObjects(returnValue, testParameter, @"The function should be called and return its parameter");
+    
+    TestObject* anotherObject = [[TestObject alloc] init];
+    anotherObject.name = @"Foo";
+    [anotherObject useScriptObjectNamed:@"SubModule" inScriptContext:_context];
+    
+    returnValue  = [object callScriptFunction:@"testCallingOtherFunction" parameters:@[anotherObject] error:&error];
+    
+    STAssertNil(error, @"An error %@ should not be thrown", error);
+    STAssertEqualObjects(returnValue, @"FooBar, Foo", @"The function should be called");
+    
+}
+
+- (void) testPoints {
+    
+    CGPoint point = CGPointMake(10, 10);
+    
+    NSError* error = nil;
+    id returnValue = nil;
+    
+    [_context setProperty:@"point" toObject:JSPoint(point)];
+    
+    [_context evaluateScript:@"log(point.x)" error:&error];
+    returnValue = [_context evaluateScript:@"point.x == 10 && point.y == 10" error:&error];
+    
+    STAssertEqualObjects(returnValue, @YES, @"Point should be accessed from JS");
+    
+    returnValue = nil;
+    error = nil;
+    
+    returnValue = [_context evaluateScript:@"point = new Point(15,15)" error:&error];
+    
+    STAssertTrue([returnValue isKindOfClass:[NSValue class]], @"An NSValue should be returned");
+    STAssertTrue(strcmp([returnValue objCType], @encode(CGPoint)) == 0, @"The returned value should be a point");
+    
 }
 
 

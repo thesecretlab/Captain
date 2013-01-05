@@ -37,6 +37,32 @@
                BlueprintName = "CaptainTests"
                ReferencedContainer = "container:Captain.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "JSDelegationTests/testFunctionCollectionRegistration">
+               </Test>
+               <Test
+                  Identifier = "JSDelegationTests/testInheritance">
+               </Test>
+               <Test
+                  Identifier = "JSDelegationTests/testLoadingAllScripts">
+               </Test>
+               <Test
+                  Identifier = "JSDelegationTests/testLoadingScripts">
+               </Test>
+               <Test
+                  Identifier = "JSDelegationTests/testObjectInteraction">
+               </Test>
+               <Test
+                  Identifier = "JSDelegationTests/testPoints">
+               </Test>
+               <Test
+                  Identifier = "JSDelegationTests/testScriptEvaluation">
+               </Test>
+               <Test
+                  Identifier = "JSDelegationTests/testSingleFunctionRegistration">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
    </TestAction>

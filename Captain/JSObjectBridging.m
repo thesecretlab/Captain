@@ -8,7 +8,8 @@
 
 #import "JSDefines.h"
 #import "JSTypeConversion.h"
-
+#import "JSObjectBridging.h"
+#import "JSContext.h"
 
 // Given a string 'name', returns a selector
 // for a method 'handleName:'
@@ -60,11 +61,22 @@ bool NativeObjectHasProperty(JSContextRef ctx, JSObjectRef object, JSStringRef p
         if ([internalObject objectForKey:key])
             return YES;
     }
-        
+    
+    
+    
     // It's possible it has a method for it
     SEL methodCallSelector = MethodCallSelectorForName(key);
-    return [internalObject respondsToSelector:methodCallSelector];
-
+    if ([internalObject respondsToSelector:methodCallSelector])
+        return YES;
+    
+    // Could be that the object's associated script object, if it has one, has it
+    JSObjectRef scriptObject = [internalObject scriptObject];
+    
+    if (scriptObject != nil) {
+        return JSObjectHasProperty(ctx, scriptObject, propertyName);
+    }
+    
+    return NO;
     
     
 }
@@ -160,6 +172,15 @@ JSValueRef NativeObjectGetProperty (JSContextRef ctx, JSObjectRef object, JSStri
 #pragma clang diagnostic pop
             });
         }
+        
+        // Could be that the object's associated script object, if it has one, has it
+        JSObjectRef scriptObject = [internalObject scriptObject];
+        
+        if (scriptObject != nil) {
+            return JSObjectGetProperty(ctx, scriptObject, propertyName, exception);
+        }
+        
+        // Nope, not found
         
         *exception  = JSValueWithNSString(ctx, [NSString stringWithFormat:@"%@ has no method '%@'", [internalObject class], key]);
         return JSValueMakeUndefined(ctx);
@@ -262,6 +283,57 @@ JSClassRef NativeObjectClass() {
     
     if (_class == nil)
         _class = JSClassCreate(&NativeObjectClassDefinition);
+    
+    return _class;
+}
+
+JSObjectRef PointValueConstructor (JSContextRef ctx, JSObjectRef constructor, size_t argumentCount, const JSValueRef arguments[], JSValueRef* exception) {
+    
+    JSObjectRef object = JSObjectMake(ctx, PointValueClass(), nil);
+    
+    if (argumentCount >= 2) {
+        JSStringRef propertyName;
+        
+        propertyName = JSStringCreateWithUTF8CString("x");
+        JSObjectSetProperty(ctx, object, propertyName, arguments[0], kJSPropertyAttributeDontDelete, exception);
+        JSStringRelease(propertyName);
+        
+        
+        propertyName = JSStringCreateWithUTF8CString("y");
+        JSObjectSetProperty(ctx, object, propertyName, arguments[1], kJSPropertyAttributeDontDelete, exception);
+        JSStringRelease(propertyName);
+        
+    }
+    
+    return object;
+    
+}
+
+JSClassDefinition PointValueClassDefinition = {
+    0, // version
+    0, // attributes
+    "Point", // class name
+    NULL, // parent class
+    NULL, // static values
+    NULL, // static functions
+    NULL, // initialise callback
+    NULL, // finalise callback
+    NULL, // has property callback
+    NULL, // get property callback
+    NULL, // set property callback
+    NULL, // delete property callback
+    NULL, // get property names callback
+    NULL, // call as function callback
+    &PointValueConstructor, // call as constructor callback
+    NULL, // has instance callback
+    NULL // convert to type callback
+};
+
+JSClassRef PointValueClass() {
+    static JSClassRef _class = nil;
+    
+    if (_class == nil)
+        _class = JSClassCreate(&PointValueClassDefinition);
     
     return _class;
 }

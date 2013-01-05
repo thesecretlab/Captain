@@ -28,3 +28,12 @@ SubModule.doSomething = function() {
     return this.prototype.doSomething() + "Bar, " + this.name;
 }
 
+this.OtherModule = {};
+
+OtherModule.testCallingOtherFunction = function(anObject) {
+    return anObject.doSomething();
+}
+
+OtherModule.testFunction = function(a) {
+    return a;
+}

@@ -7,9 +7,120 @@
 //
 
 #import "JSContext.h"
+#import <objc/objc-runtime.h>
+
+static char* JSObjectDeallocBlockKey = "JSObjectDeallocBlockKey";
+static char* JSObjectScriptContextKey = "JSObjectScriptContextKey";
+static char* JSObjectScriptObjectKey = "JSObjectScriptObjectKey";
+
+typedef void(^RunOnDeallocBlock)(void);
+
+@interface JSDeallocBlock : NSObject
+
+@property (copy) RunOnDeallocBlock deallocBlock;
+
+@end
+
+@implementation JSDeallocBlock
+
+- (void)dealloc {
+    if (self.deallocBlock)
+        self.deallocBlock();
+}
+
+@end
+
+@interface JSContext ()
+
+- (JSObjectRef) _objectRefForProperty:(NSString*)propertyName inObject:(JSObjectRef)object;
+- (JSObjectRef) _globalObject;
+
+- (JSContextRef) _scriptContext;
+
+@end
+
+
+
+
+@implementation NSObject (JSObjectAssociation)
+
+- (void)useScriptObjectNamed:(NSString *)scriptObject inScriptContext:(JSContext *)context {
+    self.scriptContext = context;
+    self.scriptObject = [context _objectRefForProperty:scriptObject inObject:[context _globalObject]];    
+}
+
+- (id)callScriptFunction:(NSString *)functionName error:(NSError *__autoreleasing *)error {
+    return [self callScriptFunction:functionName parameters:nil error:error];    
+}
+
+- (id)callScriptFunction:(NSString *)functionName parameters:(NSArray *)parameters error:(NSError *__autoreleasing *)error {
+    
+    JSObjectRef functionObject = [self.scriptContext _objectRefForProperty:functionName inObject:self.scriptObject];
+    
+    if (functionObject == nil)
+        return nil;
+    
+    JSValueRef exception = nil;
+    
+    id returnValue = CallFunctionObject(self.scriptContext._scriptContext, functionObject, parameters, self, self.scriptObject, &exception);
+    
+    if (exception != nil) {
+        NSString* errorString = NSStringWithJSValue(self.scriptContext._scriptContext, exception);
+        NSLog(@"%@", errorString);
+        if (error != nil) {
+            
+            *error = [NSError errorWithDomain:@"JavaScript" code:0 userInfo:@{NSLocalizedDescriptionKey:errorString}];
+        }
+        return nil;
+    }
+    
+    return returnValue;
+    
+}
+
+
+- (void)setScriptContext:(JSContext *)scriptContext {
+    objc_setAssociatedObject(self, JSObjectScriptContextKey, scriptContext, OBJC_ASSOCIATION_RETAIN);
+}
+
+- (JSContext *)scriptContext {
+    return objc_getAssociatedObject(self, JSObjectScriptContextKey);
+}
+
+- (void)setScriptObject:(JSObjectRef)scriptObject {
+    if (objc_getAssociatedObject(self, JSObjectDeallocBlockKey) == nil) {
+        
+        // TODO: Possibly a retain cycle here - dealloc is never being called on the JSDeallocBlock
+        JSDeallocBlock* deallocBlock = [[JSDeallocBlock alloc] init];
+        
+        __weak NSObject* weakSelf = self;
+        deallocBlock.deallocBlock = ^{
+            weakSelf.scriptObject = nil;
+        };
+        objc_setAssociatedObject(self, JSObjectDeallocBlockKey, deallocBlock, OBJC_ASSOCIATION_RETAIN);
+    }
+    
+    JSObjectRef formerObject = self.scriptObject;
+    
+    if (formerObject)
+        JSValueUnprotect(self.scriptContext._scriptContext, formerObject);
+    
+    JSValueProtect(self.scriptContext._scriptContext, scriptObject);
+    
+    objc_setAssociatedObject(self, JSObjectScriptObjectKey, [NSValue valueWithPointer:scriptObject], OBJC_ASSOCIATION_RETAIN);
+}
+
+- (JSObjectRef)scriptObject {
+    NSValue* value = objc_getAssociatedObject(self, JSObjectScriptObjectKey);
+    
+    return value.pointerValue;
+}
+
+@end
 
 @implementation JSContext {
     JSGlobalContextRef _scriptContext;
+    NSMutableArray* _loadedScriptNames;
 }
 
 - (id)init
@@ -18,12 +129,27 @@
     if (self) {
         _scriptContext = JSGlobalContextCreate(NULL);
         
+        _loadedScriptNames = [NSMutableArray array];
+        
         // Register a simple 'log' method that scripts can use
         [self addFunction:^id(NSArray *parameters) {
             NSLog(@"%@", [parameters componentsJoinedByString:@" "]);
             
             return nil;
         } withName:@"log"];
+        
+        __weak id weakSelf = self;
+        [self addFunction:^id(NSArray *parameters) {
+            [weakSelf loadScriptNamed:parameters[0] error:nil];
+            return nil;
+        } withName:@"require"];
+        
+        // Prepare prototype objects
+        JSStringRef name = JSStringCreateWithUTF8CString("Point");
+        JSObjectRef pointPrototype = JSObjectMake(_scriptContext, PointValueClass(), NULL);
+        JSObjectSetProperty(_scriptContext, JSContextGetGlobalObject(_scriptContext), name, pointPrototype, kJSPropertyAttributeReadOnly, NULL);
+        JSStringRelease(name);
+        
     }
     return self;
 }
@@ -228,17 +354,25 @@
 // built-in JavaScript files.
 - (BOOL)loadScriptNamed:(NSString*)fileName error:(NSError**)error  {
     
+    if ([_loadedScriptNames containsObject:[fileName stringByDeletingPathExtension]])
+        return NO;
+    
     JSStringRef scriptName = JSStringCreateWithNSString([fileName stringByDeletingPathExtension]);
     JSObjectRef globalObject = JSContextGetGlobalObject(_scriptContext);
     JSObjectRef containerObject = JSObjectMake(_scriptContext, NULL, NULL);
     JSObjectSetProperty(_scriptContext, globalObject, scriptName, containerObject, 0, NULL);
     
-    return [self evaluateFile:fileName error:error] != nil;
+    [_loadedScriptNames addObject:[fileName stringByDeletingPathExtension]];
+    
+    return [self evaluateFileAtURL:[self urlForScriptNamed:fileName] error:error] != nil;
     
 }
 
-- (id) evaluateFile:(NSString*)fileName error:(NSError**)error {
-    NSURL* scriptURL = nil;
+- (NSURL*)urlForScriptNamed:(NSString*)fileName {
+    
+    if ([[fileName pathExtension] isEqualToString:@"js"] == NO) {
+        fileName = [fileName stringByAppendingPathExtension:@"js"];
+    }
     
 #if TARGET_OS_IPHONE
     // If we're running on the iPhone, look for the file in the
@@ -246,25 +380,30 @@
     
     NSURL* documentsURL = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
     
-    scriptURL = [documentsURL URLByAppendingPathComponent:fileName];
     
-    // Add a .js extension to the name, if necessary.
-    if ([[fileName pathExtension] isEqualToString:@"js"] == NO)
-        scriptURL = [scriptURL URLByAppendingPathExtension:@"js"];
+    NSEnumerator* documentResourcesEnumerator = [[NSFileManager defaultManager] enumeratorAtURL:documentsURL includingPropertiesForKeys:nil options:NSDirectoryEnumerationSkipsHiddenFiles errorHandler:nil];
     
-    if ([[NSFileManager defaultManager] fileExistsAtPath:[scriptURL path]] == NO)
-        scriptURL = nil;
+    for (NSURL* resourceURL in documentResourcesEnumerator) {
+        if ([[[resourceURL lastPathComponent] stringByDeletingPathExtension] isEqualToString:fileName]) {
+            return resourceURL;
+        }
+    }
+    
 #endif
     
-    // Else fall back to the built-in resources.
-    if (scriptURL == nil) {
-        scriptURL = [[NSBundle bundleForClass:[self class]] URLForResource:fileName withExtension:@"js"];
+    NSURL* bundleResourceURL = [[NSBundle bundleForClass:[self class]] resourceURL];
+    NSEnumerator* resourcesEnumerator = [[NSFileManager defaultManager] enumeratorAtURL:bundleResourceURL includingPropertiesForKeys:nil options:NSDirectoryEnumerationSkipsHiddenFiles errorHandler:nil];
+    
+    for (NSURL* resourceURL in resourcesEnumerator) {
+        if ([[resourceURL lastPathComponent] isEqualToString:fileName]) {
+            return resourceURL;
+        }
     }
     
-    // Still couldn't find it? Give up.
-    if (scriptURL == nil) {
-        return nil;
-    }
+    return nil;
+}
+
+- (id) evaluateFileAtURL:(NSURL*)scriptURL error:(NSError**)error {
     
     // Load the script and evaluate it.
     NSString* scriptText = [NSString stringWithContentsOfURL:scriptURL encoding:NSUTF8StringEncoding error:error];
@@ -286,10 +425,32 @@
     
 }
 
+- (id)evaluateFileNamed:(NSString *)scriptFileName error:(NSError **)error {
+    if ([[scriptFileName pathExtension] isEqualToString:@"js"])
+        scriptFileName = [scriptFileName stringByDeletingPathExtension];
+    
+    NSURL* url = [[NSBundle bundleForClass:[self class]] URLForResource:scriptFileName withExtension:@"js"];
+    
+    if (url == nil) {
+        
+        if (error != NULL) {
+            *error = [NSError errorWithDomain:@"JavaScript" code:0 userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Can't find script %@", scriptFileName]}];
+        }
+        return nil;
+    }
+    
+    return [self evaluateFileAtURL:url error:error];
+}
+
+- (id) callFunction:(NSString*)functionName withObject:(NSObject*)thisObject error:(NSError**)error {
+    return [self callFunction:functionName inSuite:NSStringFromClass([thisObject class]) thisObject:thisObject error:error];
+}
+
+- (id) callFunction:(NSString *)functionName withObject:(NSObject *)thisObject  parameters:(NSArray *)parameters error:(NSError **)error {
+    return [self callFunction:functionName inSuite:NSStringFromClass([thisObject class]) parameters:parameters thisObject:thisObject error:error];
+}
 
 - (id) callFunction:(NSString*)functionName inSuite:(NSString*)suiteName thisObject:(NSObject*)thisObject error:(NSError**) error {
-    
-    
     return [self callFunction:functionName inSuite:suiteName parameters:nil thisObject:thisObject error:error];
     
 }
@@ -335,42 +496,36 @@
     
     NSURL* documentsURL = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
     
-    NSArray* files = [[NSFileManager defaultManager] contentsOfDirectoryAtURL:documentsURL includingPropertiesForKeys:nil options:NSDirectoryEnumerationSkipsHiddenFiles error:nil];
     
-    files = [files filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
-        
-        return [[evaluatedObject pathExtension] isEqualToString:@"js"];
-        
-    }]];
+    NSEnumerator* documentResourcesEnumerator = [[NSFileManager defaultManager] enumeratorAtURL:documentsURL includingPropertiesForKeys:nil options:NSDirectoryEnumerationSkipsHiddenFiles errorHandler:nil];
     
-    
-    for (NSURL* url in files) {
-        NSString* fileName = [[url lastPathComponent] stringByDeletingPathExtension];
-        [self loadScriptNamed:fileName error:error];
-        
-        if (error != nil && *error != nil)
-            return NO;
-        
-        [loadedScripts addObject:fileName];
+    for (NSURL* resourceURL in documentResourcesEnumerator) {
+        if ([[resourceURL pathExtension]isEqualToString:@"js"]) {
+            NSString* fileName = [[resourceURL lastPathComponent] stringByDeletingPathExtension];
+            [self loadScriptNamed:fileName error:error];
+            
+            if (error != nil && *error != nil)
+                return NO;
+            
+            [loadedScripts addObject:fileName];
+        }
     }
     
 #endif
     
-    NSArray* bundleContents = [[NSBundle bundleForClass:[self class]] URLsForResourcesWithExtension:@"js" subdirectory:nil];
+    NSURL* bundleResourceURL = [[NSBundle bundleForClass:[self class]] resourceURL];
+    NSEnumerator* resourcesEnumerator = [[NSFileManager defaultManager] enumeratorAtURL:bundleResourceURL includingPropertiesForKeys:nil options:NSDirectoryEnumerationSkipsHiddenFiles errorHandler:nil];
     
-    for (NSURL* url in bundleContents) {
-        NSString* fileName = [[url lastPathComponent] stringByDeletingPathExtension];
-        
-        if ([loadedScripts containsObject:fileName])
-            continue;
-        
-        [self loadScriptNamed:fileName error:error];
-        
-        if (error != nil && *error != nil)
-            return NO;
-        
-        [loadedScripts addObject:fileName];
-        
+    for (NSURL* resourceURL in resourcesEnumerator) {
+        if ([[resourceURL pathExtension]isEqualToString:@"js"]) {
+            NSString* fileName = [[resourceURL lastPathComponent] stringByDeletingPathExtension];
+            [self loadScriptNamed:fileName error:error];
+            
+            if (error != nil && *error != nil)
+                return NO;
+            
+            [loadedScripts addObject:fileName];
+        }
     }
     
     // All loaded scripts get their "load" function called
@@ -392,14 +547,20 @@
             NSLog(@"Error calling load() for %@: %@", scriptName, NSStringWithJSValue(_scriptContext, exception));
         }
         
-        
-        
     }
     
     
     return YES;
     
     
+}
+
+- (JSObjectRef)_globalObject {
+    return JSContextGetGlobalObject(_scriptContext);
+}
+
+- (JSContextRef)_scriptContext {
+    return _scriptContext;
 }
 
 // Tidy up the script execution context.

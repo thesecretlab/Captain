@@ -9,6 +9,8 @@
 #import "JavaScriptCore.h"
 #import "JSTypeConversion.h"
 #import "JSObjectBridging.h"
+#import <CoreGraphics/CoreGraphics.h>
+#import <UIKit/UIKit.h>
 
 // Returns an NSString, given a JSString.
 NSString* NSStringWithJSString(JSStringRef string) {
@@ -141,6 +143,22 @@ NSObject* NSObjectWithJSValue(JSContextRef context, JSValueRef value) {
                 returnObjCValue = ^(NSArray* parameters) {
                     return CallFunctionObject(context, (JSObjectRef)value, parameters, nil, NULL, nil);
                 };
+            } else if (JSValueIsObjectOfClass(context, value, PointValueClass())) {
+                JSObjectRef object = (JSObjectRef)value;
+                JSStringRef propertyName;
+                
+                propertyName = JSStringCreateWithUTF8CString("x");
+                JSValueRef xValue = JSObjectGetProperty(context, object, propertyName, &exception);
+                double x = JSValueToNumber(context, xValue, &exception);
+                JSStringRelease(propertyName);
+                
+                propertyName = JSStringCreateWithUTF8CString("y");
+                JSValueRef yValue = JSObjectGetProperty(context, object, propertyName, &exception);
+                double y = JSValueToNumber(context, yValue, &exception);
+                JSStringRelease(propertyName);
+                
+                CGPoint point = CGPointMake(x,y);
+                return [NSValue valueWithCGPoint:point];
             } else {
                 returnObjCValue = NSDictionaryWithJSObject(context, (JSObjectRef)value);
             }
@@ -201,6 +219,47 @@ JSValueRef JSValueWithNSObject(JSContextRef context, id value, JSValueRef* excep
         return JSValueWithNSString(context, value);
     if ([value isKindOfClass:[NSNull class]] || value == nil)
         return JSValueMakeNull(context);
+    if ([value isKindOfClass:[NSArray class]]) {
+        JSStringRef arrayName = JSStringCreateWithUTF8CString("Array");
+        JSObjectRef arrayPrototype = (JSObjectRef)JSObjectGetProperty(context, JSContextGetGlobalObject(context), arrayName, exception);
+        
+        JSObjectRef array = JSObjectCallAsConstructor(context, arrayPrototype, 0, NULL, exception);
+        
+        JSStringRelease(arrayName);
+        
+        int propertyIndex = 0;
+        for (id object in (NSArray*)value) {
+            JSObjectSetPropertyAtIndex(context, array, propertyIndex, JSValueWithNSObject(context, object, exception), exception);
+            propertyIndex++;
+        }
+        
+        return array;
+        
+    }
+    if ([value isKindOfClass:[NSValue class]]) {
+        if (strcmp([value objCType], @encode(CGPoint)) == 0) {
+            
+            CGPoint point = [value CGPointValue];
+            
+            JSObjectRef object = JSObjectMake(context, PointValueClass(), nil);
+            
+            
+            JSStringRef propertyName;
+            propertyName = JSStringCreateWithUTF8CString("x");
+            
+            JSObjectSetProperty(context, object, propertyName, JSValueMakeNumber(context, point.x), kJSPropertyAttributeDontDelete, exception);
+            
+            JSStringRelease(propertyName);
+            
+            propertyName = JSStringCreateWithUTF8CString("y");
+            
+            JSObjectSetProperty(context, object, propertyName, JSValueMakeNumber(context, point.y), kJSPropertyAttributeDontDelete, exception);
+            
+            JSStringRelease(propertyName);
+            
+            return object;
+        }
+    }
     
     // Wrap it in a wrapper object
     JSObjectRef wrapperObject = JSObjectMake(context, NativeObjectClass(), (void*)CFBridgingRetain(value));
